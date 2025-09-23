@@ -2,13 +2,13 @@ import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import AgentLogin from './AgentLogin'
+import Register from './auth/Register'
 
 function App() {
 
   return (
     <>
-      <AgentLogin/>
+      <Register />
     </>
   )
 }
