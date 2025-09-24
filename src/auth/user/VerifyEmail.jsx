@@ -1,12 +1,10 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../utils/axios.js";
 import { Loader2, CheckCircle, AlertCircle, ArrowRight } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-
-// Todo : Add Resend Code functionality
 
 const VerifyEmail = () => {
   const [verification, setVerification] = useState({
@@ -15,7 +13,19 @@ const VerifyEmail = () => {
   });
   const [notification, setNotification] = useState({ type: "", content: "" });
   const [loading, setLoading] = useState(false);
+  const [countdown, setCountdown] = useState(20);
+  const [resendLoading, setResendLoading] = useState(false);
+  const [canResend, setCanResend] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    } else {
+      setCanResend(true);
+    }
+  }, [countdown]);
 
   const handleVerify = async (e) => {
     e.preventDefault();
@@ -43,17 +53,47 @@ const VerifyEmail = () => {
     }
   };
 
+  const handleResend = async (e) => {
+    e.preventDefault();
+    setResendLoading(true);
+    setNotification({ type: "", content: "" });
+
+    try {
+      const response = await axios.post("/api/auth/user/resend-verification", {
+        email: verification.email,
+      });
+      setNotification({
+        type: "success",
+        content:
+          response.data?.message || "Verification code resent successfully!",
+      });
+      setCanResend(false);
+      setVerification({ ...verification, verificationCode: "" });
+      setCountdown(20);
+    } catch (err) {
+      setNotification({
+        type: "error",
+        content:
+          err.response?.data?.message ||
+          "Failed to resend code. Please try again.",
+      });
+    } finally {
+      setResendLoading(false);
+    }
+  };
+
   return (
     <>
       <div
-        className="max-w-md mx-auto mt-50 p-6 rounded-xl shadow-lg border h-80 "
+        className="max-w-md mx-auto mt-16 p-6 rounded-xl shadow-lg border h-100 bg-white"
         style={{
           fontFamily: "var(--font-ubuntu)",
-          backgroundImage: "url('./Group.png')",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
         }}
       >
+        <div
+          className="absolute inset-0 -z-10 bg-cover bg-center opacity-10"
+          style={{ backgroundImage: "url('/Group.png')" }}
+        />
         <h2 className="text-2xl font-bold mb-4">Verify Email</h2>
         {notification.content && (
           <Alert
@@ -127,13 +167,23 @@ const VerifyEmail = () => {
           </form>
         </div>
 
-        {/* <Button
-          variant="outline"
-          className="w-full mt-3"
-          onClick={handleResend}
-        >
-          Resend Code
-        </Button> */}
+        <div className="text-center space-y-2 mt-5">
+          <p className="text-sm text-gray-600">Didn't receive the code?</p>
+          {canResend ? (
+            <Button
+              variant="outline"
+              onClick={handleResend}
+              disabled={resendLoading}
+              className="text-black border-[#333] hover:border-[#333] "
+            >
+              {resendLoading ? "Resending..." : "Resend Code"}
+            </Button>
+          ) : (
+            <p className="text-sm text-gray-500">
+              Resend in {countdown} seconds
+            </p>
+          )}
+        </div>
       </div>
     </>
   );
