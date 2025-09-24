@@ -1,15 +1,19 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import Register from './auth/Register'
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Register from './auth/user/Register'
+import VerifyEmail from './auth/user/VerifyEmail'
+import Login from './auth/user/Login';
 
 function App() {
 
   return (
-    <>
-      <Register />
-    </>
+  <Router>
+    <Routes>
+         <Route path="/register" element={<Register />} />
+        <Route path="/verify" element={<VerifyEmail />} />
+        <Route path="/login" element={<Login />} />
+    </Routes>
+  </Router>
   )
 }
 
