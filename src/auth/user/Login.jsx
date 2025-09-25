@@ -50,11 +50,12 @@ const Login = () => {
       }
 
       // Store token and user info in localStorage
-      localStorage.setItem("authToken", token);
+      localStorage.setItem("jwtToken", token);
       localStorage.setItem("userId", userId);
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
       localStorage.setItem("tokenExpiry", expiresAt);
 
+      console.log(localStorage);
       setNotification({
         type: "success",
         content: "Login successful! Redirecting....",
