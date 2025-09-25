@@ -24,7 +24,7 @@ const ResetPassword = () => {
   const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
-  const [notification, setNotification] = useState(null);
+  const [notification, setNotification] = useState({ type: "", message: "" });
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   // cooldown for resend OTP (seconds)
@@ -70,12 +70,12 @@ const ResetPassword = () => {
 
   const handleReset = async (e) => {
     e.preventDefault();
-    setNotification(null);
+    setNotification({ type: "", message: "" });
     if (!validate()) return;
 
     setLoading(true);
     try {
-      const { data } = await axios.post("api/auth/user/reset-password", {
+      const { data } = await axios.post("/api/auth/user/reset-password", {
         email: email.trim(),
         otp: otp.trim(),
         newPassword,
@@ -84,7 +84,7 @@ const ResetPassword = () => {
       setShowSuccessModal(true);
       setNotification({
         type: "success",
-        message: data.message || "Password reset successful.",
+        message: data?.message || "Password reset successful.",
       });
 
       setTimeout(() => {
@@ -95,7 +95,7 @@ const ResetPassword = () => {
       setNotification({
         type: "error",
         message:
-          err.response?.data?.message ||
+          err.response?.data?.error ||
           "Failed to reset password. Check OTP and try again.",
       });
     } finally {
@@ -106,7 +106,7 @@ const ResetPassword = () => {
   const handleResend = async () => {
     if (cooldown > 0) return; // still cooling down
     setResendLoading(true);
-    setNotification(null);
+    setNotification({ type: "", message: "" });
     try {
       const { data } = await axios.post("/api/auth/user/request-reset-otp", {
         email: email,
@@ -128,16 +128,16 @@ const ResetPassword = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen ml-230 flex items-center justify-center">
         <div className="w-full max-w-md p-8 bg-white border border-black/5 rounded-2xl shadow-md">
-          <h1 className="text-2xl font-semibold text-black mb-2">
+          <h1 className="text-2xl font-semibold text-black mb-2 flex justify-center ">
             Reset your password
           </h1>
-          <p className="text-sm text-gray-600 mb-6">
+          <p className="text-sm text-gray-600 mb-6 flex justify-center">
             Use the OTP sent to your email to set a new password.
           </p>
 
-          {notification && (
+          {notification.message && (
             <div
               className={`mb-4 p-3 rounded-md ${
                 notification.type === "error"
@@ -166,12 +166,12 @@ const ResetPassword = () => {
               placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-white text-black"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:border-[#333] focus:ring-2 focus:ring-[#333]/10"
               required
             />
 
             <div>
-              <label className="block text-sm font-medium text-black">
+              <label className="block text-sm font-medium mb-3 text-black">
                 OTP
               </label>
               <div className="flex gap-2">
@@ -180,8 +180,8 @@ const ResetPassword = () => {
                   placeholder="Enter OTP"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  className="bg-white text-black flex-1"
                   required
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:border-[#333] focus:ring-2 focus:ring-[#333]/10 "
                 />
                 <Button
                   type="button"
@@ -208,6 +208,7 @@ const ResetPassword = () => {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:border-[#333] focus:ring-2 focus:ring-[#333]/10 "
             />
 
             <Button

@@ -69,7 +69,7 @@ const Register = () => {
   return (
     <>
       <div
-        className=" min-h-screen  flex items-center justify-center bg-[#f2f4f8] p-8 w-250"
+        className=" min-h-screen ml-80 flex items-center justify-center bg-[#f2f4f8] p-8 w-400"
         style={{
           fontFamily: "var(--font-ubuntu)",
           backgroundImage: "url('./Group.png')",
@@ -78,10 +78,10 @@ const Register = () => {
         }}
       >
         <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-[0_8px_24px_rgba(0,0,0,0.08)]">
-          <div className="text-sm text-gray-500 mb-2">
+          <div className=" flex justify-center text-sm text-gray-500 mb-2">
             Hey Tourist!, Travel the world with us{" "}
           </div>
-          <h2 className="text-2xl font-semibold text-black mb-12">
+          <h2 className="text-2xl flex justify-center font-semibold text-black mb-12">
             User Registration
           </h2>
 

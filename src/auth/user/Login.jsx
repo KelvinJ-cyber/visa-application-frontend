@@ -8,7 +8,6 @@ import axios from "../../utils/axios.js";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
-
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -76,7 +75,7 @@ const Login = () => {
   };
   return (
   <>
-    <Card className=" h-120 shadow-lg w-100 mt-40" style={{ fontFamily: "var(--font-ubuntu)" }}>
+    <Card className="flex ml-230 h-120 shadow-lg w-120 mt-40" style={{ fontFamily: "var(--font-ubuntu)" }}>
       <CardHeader className="text-center">
         <CardTitle className="text-2xl font-bold text-gray-800">Welcome Back !</CardTitle>
         <CardDescription>Sign in to <span className=" font-bold">TravelSure</span></CardDescription>
@@ -87,7 +86,7 @@ const Login = () => {
             <Label htmlFor="email">Email</Label>
             <div className="relative">
               <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
+              <input
                 id="email"
                 name="email"
                 type="email"
@@ -99,7 +98,7 @@ const Login = () => {
                         email: e.target.value,
                       })
                     }
-                className="pl-10"
+             className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:border-[#333] focus:ring-2 focus:ring-[#333]/10 pl-9"
                 disabled={loading}
               />
             </div>
@@ -118,7 +117,7 @@ const Login = () => {
             </div>
             <div className="relative">
               <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-              <Input
+              <input
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
@@ -130,7 +129,7 @@ const Login = () => {
                         password: e.target.value,
                       })
                     }
-                className="pl-10 pr-10"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:border-[#333] focus:ring-2 focus:ring-[#333]/10 pl-9"
                 disabled={loading}
               />
               <button

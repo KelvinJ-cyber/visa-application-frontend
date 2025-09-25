@@ -22,7 +22,7 @@ const RequestResetOtp = () => {
 
   const navigate = useNavigate();
 
-//   const validateEmail = (value) => /^\S+@\S+\.\S+$/.test(value);
+  //   const validateEmail = (value) => /^\S+@\S+\.\S+$/.test(value);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +43,7 @@ const RequestResetOtp = () => {
       setShowSuccessModal(true);
       setNotification({
         type: "success",
-        content:  response.data?.message || "OTP sent. Check your email.",
+        content: response.data?.message || "OTP sent. Check your email.",
       });
 
       // after short delay navigate to reset page with email in query
@@ -64,14 +64,16 @@ const RequestResetOtp = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center ">
-        <div className="w-full max-w-md p-8 bg-white border border-black/5 rounded-2xl shadow-md">
-          <h1 className="text-2xl font-semibold text-black mb-2">
+      <div className="ml-230 w-120  min-h-screen mt-50  ">
+        <div className="w-full  max-w-md p-8 bg-white border border-black/5 rounded-2xl shadow-md">
+          <h1 className="text-2xl font-semibold text-black mb-2 justify-center flex">
             Forgot your password?
           </h1>
-          <p className="text-sm text-gray-600 mb-6">
-            Enter the email for your account and we'll send an OTP to reset your
-            password.
+          <p className="text-sm text-gray-600 mb-6 ml-6">
+            Enter the email for your account and we'll send an OTP{" "}
+            <span className=" flex justify-center">
+              to reset your password.{" "}
+            </span>
           </p>
 
           {notification.content && (
@@ -95,15 +97,15 @@ const RequestResetOtp = () => {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <label className="block text-sm font-medium text-black">
+            <label className="block ml-2 text-sm font-medium text-black">
               Email
             </label>
-            <Input
+            <input
               name="email"
               placeholder="you@example.com"
               value={email.email}
-              onChange={(e) => setEmail({...email, email: e.target.value,})}
-              className="bg-white text-black"
+              onChange={(e) => setEmail({ ...email, email: e.target.value })}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:border-[#333] focus:ring-2 focus:ring-[#333]/10"
               required
             />
 
@@ -128,10 +130,10 @@ const RequestResetOtp = () => {
             <div className="text-center mt-2">
               <button
                 type="button"
-                className="text-sm text-gray-600 underline underline-offset-2"
+                className="text-sm text-gray-600  underline-offset-2"
                 onClick={() => navigate("/login")}
               >
-                Remembered? Back to Login
+                Remembered? <span className=" cursor-pointer hover:underline ">Back to Login </span> 
               </button>
             </div>
           </form>

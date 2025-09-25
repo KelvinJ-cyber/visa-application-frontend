@@ -1,4 +1,4 @@
-import './App.css'
+// import './App.css'
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Register from './auth/user/Register'
 import VerifyEmail from './auth/user/VerifyEmail'
@@ -6,6 +6,7 @@ import Login from './auth/user/Login';
 import RequestResetOtp from './auth/user/RequestResetOtp';
 import ResetPassword from './auth/user/ResetPassword';
 import AdminLogin from './auth/admin/AdminLogin';
+import DashBoard from './user/DashBoard';
 
 function App() {
 
@@ -24,7 +25,7 @@ function App() {
         {/* Admin Auth routes  */}
         <Route path="/admin/login" element={<AdminLogin />} />
 
-    
+        <Route path="/dashboard" element={<DashBoard/>} />
     </Routes>
   </Router>
   )
