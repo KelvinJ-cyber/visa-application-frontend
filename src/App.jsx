@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import Register from './auth/user/Register'
 import VerifyEmail from './auth/user/VerifyEmail'
 import Login from './auth/user/Login';
+import RequestResetOtp from './auth/user/RequestResetOtp';
+import ResetPassword from './auth/user/ResetPassword';
 
 function App() {
 
@@ -12,6 +14,8 @@ function App() {
          <Route path="/register" element={<Register />} />
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/request-reset-otp" element={<RequestResetOtp />} />
+         <Route path="/reset-password" element={<ResetPassword />} />
     </Routes>
   </Router>
   )

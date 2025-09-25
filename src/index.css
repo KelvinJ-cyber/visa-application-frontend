@@ -15,7 +15,7 @@
         min-height: 100vh;
         margin: 0;
         background-color: #f2f4f8;
-      }
+      } 
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);

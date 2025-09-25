@@ -69,7 +69,7 @@ const Register = () => {
   return (
     <>
       <div
-        className="min-h-screen flex items-center justify-center bg-[#f2f4f8] p-8 w-200"
+        className=" min-h-screen  flex items-center justify-center bg-[#f2f4f8] p-8 w-250"
         style={{
           fontFamily: "var(--font-ubuntu)",
           backgroundImage: "url('./Group.png')",
@@ -85,7 +85,7 @@ const Register = () => {
             User Registration
           </h2>
 
-          <form onSubmit={handleRegisterSubmit} className="space-y-4">
+          <form onSubmit={handleRegisterSubmit} className="space-y-4  mb-20">
             <div className="grid grid-cols-2 gap-4">
               <div className="">
                 <label
@@ -286,7 +286,7 @@ const Register = () => {
               className="text-sm text-black hover:text-gray-600  font-medium"
             >
               Already have an account?{" "}
-              <span className=" underline">Sign in</span>
+              <span className=" text-[14px] cursor-pointer text-blue-400 hover:underline font-medium focus:outline-none">Sign in</span>
             </button>
           </div>
         </div>
