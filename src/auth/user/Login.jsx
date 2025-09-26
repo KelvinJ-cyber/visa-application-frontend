@@ -1,5 +1,6 @@
 import { Card, CardTitle ,CardContent, CardHeader, CardDescription } from "@/components/ui/card";
 import React from "react";
+import { toast } from "sonner";
 import { useState } from "react";
 import { CheckCircle, AlertCircle, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -61,7 +62,12 @@ const Login = () => {
       });
       setTimeout(() => {
         navigate("/dashboard");
-      }, 1500);
+      }, 500);
+      setTimeout(() => {
+         toast.success("Welcome back, "+ userInfo.firstName, {
+          description : "You have successfully logged in.",
+         });
+      }, 1500)
     } catch (err) {
       setNotification({
         type: "error",

@@ -13,6 +13,7 @@ import { useEffect } from "react";
 import React from "react";
 // If your global styles are in 'src/styles/globals.css', use the following import instead:
 import "@/styles/globals.css";
+import LogoutButton from "../../utils/LogoutButton.jsx";
 
 interface DashBoardSidebarProps {
   activeSection: string;
@@ -47,8 +48,8 @@ export function DashBoardSidebar({
     <>
     <div className="w-64 bg-card border-r border-border h-full p-4">
       <div className="mb-8">
-        <h2 className="mb-2">Visa Application Portal</h2>
-        Welcome back, {userInfo.firstName ?? "User"} {userInfo.lastName ?? ""}
+        <h2 className="mb-2 text-[15] font-bold">Travel Sure</h2>
+        Welcome back, {userInfo.firstName ?? "User"}
       </div>
       
       <nav className="space-y-2">
@@ -65,8 +66,12 @@ export function DashBoardSidebar({
             </Button>
           );
         })}
+        <div className="mt-155">
+        <LogoutButton />
+        </div>
       </nav>
     </div>
+
     </>
    )
 }
