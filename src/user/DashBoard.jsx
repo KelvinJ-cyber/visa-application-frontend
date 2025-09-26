@@ -3,6 +3,7 @@ import { useState } from "react";
 import { DashBoardSidebar } from "./pages/DashBoardSidebar";
 import { DashBoardOverView } from "./pages/DashboardOverView";
 import { Toaster } from "sonner";
+import { ApplicationSection } from "./pages/ApplicationSection";
 
 
 export default function DashBoard() {
@@ -12,6 +13,8 @@ export default function DashBoard() {
     switch (activeSection) {
       case "overview":
         return <DashBoardOverView />;
+      case "applications":
+        return <ApplicationSection/>
       default:
         return <DashBoardOverView />;
     }

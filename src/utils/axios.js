@@ -23,9 +23,9 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 export const apiService = {
   async getApplicationStatus() {
     await delay(800); // Simulate network delay
-    if (Math.random() < 0.1) {
-      throw new Error("Failed to fetch application status");
-    }
+    // if (Math.random() < 0.1) {
+    //   throw new Error("Failed to fetch application status");
+    // }
 
     const { data } = await instance.get("/api/user/home");
     const application = {
@@ -42,13 +42,20 @@ export const apiService = {
     await delay(800);
 
     const { data } = await instance.get("/api/user/notification");
-    console.log("Notifications " + data);
     return { data: data };
   },
   async getUpcomingAppointments() {
     await delay(600);
     return { data: mockData.upcomingAppointments };
   },
+
+  async getApplication(){
+    await delay(800);
+
+    const { data } = await instance.get("/api/user/applications");
+    console.log("Application +", data )
+    return {data : data }
+  }
 };
 
 // Request interceptor: attach token

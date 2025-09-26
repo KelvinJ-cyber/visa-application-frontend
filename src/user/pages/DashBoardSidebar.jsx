@@ -15,20 +15,13 @@ import React from "react";
 import "@/styles/globals.css";
 import LogoutButton from "../../utils/LogoutButton.jsx";
 
-interface DashBoardSidebarProps {
-  activeSection: string;
-  onSectionChange: (section: string) => void;
-}
-interface UserInfo {
-  firstName?: string;
-  lastName?: string;
-}
+
 
 export function DashBoardSidebar({
   activeSection,
   onSectionChange,
-}: DashBoardSidebarProps) {
-   const userInfo: UserInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
+}) {
+   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   useEffect(() => {
     if (userInfo && userInfo.firstName) {
       document.title = `${userInfo.firstName}'s Dashboard`;
