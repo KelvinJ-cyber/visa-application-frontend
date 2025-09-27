@@ -38,6 +38,9 @@ importers:
       lucide-react:
         specifier: ^0.544.0
         version: 0.544.0(react@19.1.1)
+      material-symbols:
+        specifier: ^0.36.1
+        version: 0.36.1
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
@@ -1430,6 +1433,9 @@ packages:
 
   magic-string@0.30.19:
     resolution: {integrity: sha512-2N21sPY9Ws53PZvsEpVtNuSW+ScYbQdp4b9qUaL+9QkHUrGFKo56Lg9Emg5s9V/qrtNBmiR01sYhUOwu3H+VOw==}
+
+  material-symbols@0.36.1:
+    resolution: {integrity: sha512-JcvqThN50Q6MrdcX73SgDU2qwzZDTS8IkcbqmsB/XFOgbGFTOlocKPEtdxfKRCW+FdMh46ycFkYS6WMIkoqIsQ==}
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -2937,6 +2943,8 @@ snapshots:
   magic-string@0.30.19:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  material-symbols@0.36.1: {}
 
   math-intrinsics@1.1.0: {}
 

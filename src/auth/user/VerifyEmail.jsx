@@ -85,7 +85,7 @@ const VerifyEmail = () => {
   return (
     <>
       <div
-        className="max-w-md mx-auto mt-16 p-6 rounded-xl shadow-lg border h-100 bg-white"
+        className="max-w-md mt-70 flex-1 mx-auto p-6 rounded-xl shadow-lg border h-100 bg-white"
         style={{
           fontFamily: "var(--font-ubuntu)",
         }}
@@ -94,7 +94,7 @@ const VerifyEmail = () => {
           className="absolute inset-0 -z-10 bg-cover bg-center opacity-10"
           style={{ backgroundImage: "url('/Group.png')" }}
         />
-        <h2 className="text-2xl font-bold mb-4">Verify Email</h2>
+        <h2 className="text-2xl flex justify-center font-bold mb-4">Verify Email</h2>
         {notification.content && (
           <Alert
             className={

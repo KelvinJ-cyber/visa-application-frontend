@@ -5,6 +5,8 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+@import "material-symbols";
+
 
 @theme {
   --font-ubuntu: 'Ubuntu', sans-serif;

@@ -169,7 +169,7 @@ export function DashBoardOverView() {
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium">
-                  Application #{derivedApplication.applicationId}
+                  Application #VA-2025-00{derivedApplication.applicationId}
                 </span>
                 <Badge
                   variant="secondary"

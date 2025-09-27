@@ -18,6 +18,19 @@ const mockData = {
     },
   ],
 };
+const STATUS_COLOR = {
+  DRAFT: "gray",
+  SUBMITTED: "blue",
+  UNDER_REVIEW: "yellow",
+  APPROVED: "green",
+  REJECTED: "red",
+};
+
+function getColorForStatus(status) {
+  if (!status) return "gray";
+  return STATUS_COLOR[status.toUpperCase()] || "gray";
+}
+
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const apiService = {
@@ -35,27 +48,33 @@ export const apiService = {
       steps: ["Draft", "Submitted", "Under Review", "Approved/Rejected"],
     };
 
-   
     return { application };
   },
   async getNotifications() {
-    await delay(800);
+    await delay(1000);
 
     const { data } = await instance.get("/api/user/notification");
     return { data: data };
   },
   async getUpcomingAppointments() {
-    await delay(600);
+    await delay(1000);
     return { data: mockData.upcomingAppointments };
   },
 
-  async getApplication(){
-    await delay(800);
-
-    const { data } = await instance.get("/api/user/applications");
-    console.log("Application +", data )
-    return {data : data }
-  }
+  async getApplication() {
+    await delay(1000);
+    const { data } = await instance.get("/api/user/applications"); // example endpoint
+    // assume data is an array
+    const transformedApplication = (Array.isArray(data) ? data : []).map(
+      (app) => ({
+        ...app,
+        status: (app.status || "").toUpperCase(),
+        // simple color name:
+        statusColor: getColorForStatus(app.status),
+      })
+    );
+    return { data: transformedApplication };
+  },
 };
 
 // Request interceptor: attach token

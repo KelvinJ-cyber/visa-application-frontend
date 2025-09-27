@@ -10,7 +10,7 @@ export function useApi(apiFunc, deps = []) {
       try {
         setLoading(true);
         const result = await apiFunc(...args);
-        const payload = result.data ?? result.application ?? result; // try possible shapes
+        const payload = result.data ?? result.application ?? result.transformedApplication ?? result; // try possible shapes
         setData(payload);
         return payload;
       } catch (err) {

@@ -15,11 +15,12 @@ import { Eye } from "lucide-react";
 import { Filter } from "lucide-react";
 import { MapPin } from "lucide-react";
 import { Calendar } from "lucide-react";
-import { Badge } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Search } from "lucide-react";
 import { Plus } from "lucide-react";
 import { RefreshCw } from "lucide-react";
 import { useState } from "react";
+import { ApplicationFormDialog } from "@/components/NewApplicationDialog";
 
 export function ApplicationSection() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -28,7 +29,7 @@ export function ApplicationSection() {
 
   // APIs calls
   const {
-    data: application,
+    data: transformedApplication,
     loading: applicationLoading,
     error: applicationError,
     refetch: refetchApplications,
@@ -36,12 +37,17 @@ export function ApplicationSection() {
 
   // Filter applications based on search and status
   const filteredApplications =
-    application?.filter((app) => {
+    transformedApplication?.filter((app) => {
       const matchesSearch =
         !searchTerm ||
-        app.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        app.destination.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        app.id.toLowerCase().includes(searchTerm.toLowerCase());
+        app.visaType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        app.countryOfApplication
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase()) ||
+        app.applicationId
+          ?.toString()
+          .toLowerCase()
+          .includes((searchTerm || "").toLowerCase());
 
       const matchesStatus =
         statusFilter === "all" || app.status === statusFilter;
@@ -52,11 +58,13 @@ export function ApplicationSection() {
   const getStatusVariant = (color) => {
     switch (color) {
       case "green":
-        return "default";
+        return "outline";
       case "yellow":
-        return "secondary";
+        return "outline";
       case "red":
-        return "destructive";
+        return "outline";
+      case "blue":
+        return "outline";
       default:
         return "outline";
     }
@@ -70,6 +78,8 @@ export function ApplicationSection() {
         return "text-yellow-600 bg-yellow-50 border-yellow-200";
       case "red":
         return "text-red-600 bg-red-50 border-red-200";
+      case "blue":
+        return "text-blue-600 bg-blue-50 border-blue-200";
       default:
         return "text-gray-600 bg-gray-50 border-gray-200";
     }
@@ -101,14 +111,9 @@ export function ApplicationSection() {
               />
               Refresh
             </Button>
-            <Button
-              onClick={() => setShowNewAppForm(true)}
-              className="gap-2 text-base px-6 py-3"
-              size="lg"
-            >
+            <ApplicationFormDialog>
               <Plus className="h-5 w-5" />
-              Start New Application
-            </Button>
+            </ApplicationFormDialog>
           </div>
         </div>
         {/* Search and Filter */}
@@ -117,7 +122,7 @@ export function ApplicationSection() {
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search applications by type, destination, or ID..."
+                placeholder="Search applications by type or destination...."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="pl-10"
@@ -131,11 +136,11 @@ export function ApplicationSection() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All Status</SelectItem>
-                  <SelectItem value="Draft">Draft</SelectItem>
-                  <SelectItem value="Submitted">Submitted</SelectItem>
-                  <SelectItem value="Under Review">Under Review</SelectItem>
-                  <SelectItem value="Approved">Approved</SelectItem>
-                  <SelectItem value="Rejected">Rejected</SelectItem>
+                  <SelectItem value="DRAFT">Draft</SelectItem>
+                  <SelectItem value="SUBMITTED">Submitted</SelectItem>
+                  <SelectItem value="UNDER_REVIEW">Under Review</SelectItem>
+                  <SelectItem value="APPROVED">Approved</SelectItem>
+                  <SelectItem value="REJECTED">Rejected</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -153,9 +158,9 @@ export function ApplicationSection() {
           <ErrorCard error={applicationError} onRetry={refetchApplications} />
         ) : filteredApplications.length > 0 ? (
           <div className="grid gap-4">
-            {filteredApplications.map((application) => (
+            {filteredApplications.map((transformedApplication) => (
               <Card
-                key={application.applicationId}
+                key={transformedApplication.applicationId}
                 className="p-6 hover:shadow-md transition-shadow duration-200"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -164,16 +169,18 @@ export function ApplicationSection() {
                       <MapPin className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <h3 className="font-medium mb-1">{application.visaType} Visa</h3>
+                      <h3 className="font-medium mb-1">
+                        {transformedApplication.visaType} Visa
+                      </h3>
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 text-muted-foreground text-sm">
                         <span className="flex items-center gap-1">
                           <MapPin className="h-4 w-4" />
-                          {application.countryOfApplication}
+                          {transformedApplication.countryOfApplication}
                         </span>
                         <span className="flex items-center gap-1">
                           <Calendar className="h-4 w-4" />
                           {new Date(
-                            application.createAt
+                            transformedApplication.createAt
                           ).toLocaleDateString()}
                         </span>
                       </div>
@@ -181,10 +188,14 @@ export function ApplicationSection() {
                   </div>
                   <div className="flex items-center gap-3">
                     <Badge
-                      variant={getStatusVariant(application.statusColor)}
-                      className={getStatusColor(application.statusColor)}
+                      variant={getStatusVariant(
+                        transformedApplication.statusColor
+                      )}
+                      className={getStatusColor(
+                        transformedApplication.statusColor
+                      )}
                     >
-                      {application.status}
+                      {transformedApplication.status}
                     </Badge>
                     <Button variant="outline" size="sm" className="gap-2">
                       <Eye className="h-4 w-4" />
@@ -195,9 +206,10 @@ export function ApplicationSection() {
 
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pt-4 mt-4 border-t border-border gap-2">
                   <span className="text-muted-foreground text-sm">
-                    Application ID: {application.applicationId}
+                    Application ID: #VA-2025-00
+                    {transformedApplication.applicationId}
                   </span>
-                  {application.status === "Draft" && (
+                  {transformedApplication.status === "Draft" && (
                     <Button
                       variant="outline"
                       size="sm"
@@ -210,7 +222,7 @@ export function ApplicationSection() {
               </Card>
             ))}
           </div>
-        ) : application && application.length === 0 ? (
+        ) : transformedApplication && transformedApplication.length === 0 ? (
           <Card className="p-12 text-center">
             <div className="max-w-sm mx-auto">
               <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
@@ -220,14 +232,11 @@ export function ApplicationSection() {
               <p className="text-muted-foreground mb-6">
                 Get started by creating your first visa application
               </p>
-              <Button
-                onClick={() => setShowNewAppForm(true)}
-                className="gap-2 text-base px-6 py-3"
-                size="lg"
-              >
-                <Plus className="h-5 w-5" />
-                Start New Application
-              </Button>
+              <div className="flex justify-center">
+                <ApplicationFormDialog className="gap-2 text-base px-6 py-3">
+                  <Plus className="h-5 w-5" />
+                </ApplicationFormDialog>
+              </div>
             </div>
           </Card>
         ) : (
