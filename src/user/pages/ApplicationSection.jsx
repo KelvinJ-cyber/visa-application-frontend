@@ -9,6 +9,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useApi } from "@/hooks/useApi";
 import { apiService } from "@/utils/axios";
 import { Eye } from "lucide-react";
@@ -55,6 +60,9 @@ export function ApplicationSection() {
       return matchesSearch && matchesStatus;
     }) || [];
 
+  const hasApplication =
+    transformedApplication && transformedApplication.length > 0;
+
   const getStatusVariant = (color) => {
     switch (color) {
       case "green":
@@ -88,11 +96,14 @@ export function ApplicationSection() {
   return (
     <>
       <div className=" space-y-6">
-        <div className="flex flex-col  sm:flex-row  sm:justify-between gap-4">
+        <div className=" flex flex-col  sm:flex-row  sm:justify-between gap-4">
           <div>
-            <h1 className="mb-2">My Applications</h1>
+            <h1 className="mb-2 text-2xl">My Applications</h1>
             <p className="text-muted-foreground">
-              Manage your visa applications
+              Manage your visa applications{" "}
+              <span className=" italic text-[12px] text-red-300">
+                *Note: one application at a time{" "}
+              </span>
             </p>
           </div>
 
@@ -103,7 +114,6 @@ export function ApplicationSection() {
               disabled={applicationLoading}
               className="gap-2"
             >
-              {" "}
               <RefreshCw
                 className={`h-4 w-4 ${
                   applicationLoading ? "animate-spin" : ""
@@ -111,9 +121,24 @@ export function ApplicationSection() {
               />
               Refresh
             </Button>
-            <ApplicationFormDialog>
-              <Plus className="h-5 w-5" />
-            </ApplicationFormDialog>
+            {hasApplication ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span>
+                    <ApplicationFormDialog disabled={hasApplication}>
+                      <Plus className="h-5 w-5" />
+                    </ApplicationFormDialog>
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>You have an application already on going</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <ApplicationFormDialog>
+                <Plus className="h-5 w-5" />
+              </ApplicationFormDialog>
+            )}
           </div>
         </div>
         {/* Search and Filter */}
@@ -209,14 +234,14 @@ export function ApplicationSection() {
                     Application ID: #VA-2025-00
                     {transformedApplication.applicationId}
                   </span>
-                  {transformedApplication.status === "Draft" && (
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="self-start sm:self-auto"
-                    >
-                      Continue Application
-                    </Button>
+                  {transformedApplication.remarks ? (
+                    <div className="text-muted-foreground text-sm">
+                      {transformedApplication.remarks}
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-sm">
+                      No remark from the admin yet
+                    </p>
                   )}
                 </div>
               </Card>

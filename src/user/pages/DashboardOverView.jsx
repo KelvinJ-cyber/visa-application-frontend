@@ -109,8 +109,12 @@ export function DashBoardOverView() {
   const getStepIcon = (stepIndex, currentStep) => {
     if (stepIndex < currentStep) {
       return <CheckCircle className="h-5 w-5 text-green-500" />;
+    } else if (stepIndex === 3) {
+      return <CheckCircle className="h-5 w-5 text-green-500" />;
     } else if (stepIndex === currentStep) {
       return <Clock className="h-5 w-5 text-yellow-500" />;
+    } else if (stepIndex === 3 && currentStep === 4) {
+      return <CheckCircle className="h-5 w-5 text-green-500" />;
     } else {
       return <div className="h-5 w-5 rounded-full border-2 border-gray-300" />;
     }

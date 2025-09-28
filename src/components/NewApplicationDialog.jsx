@@ -27,6 +27,7 @@ import { CheckCircle } from "lucide-react";
 import { XCircle } from "lucide-react";
 export function ApplicationFormDialog({
   children,
+  disabled,
   triggerLabel = "Start New Application",
 }) {
   const [open, setOpen] = useState(false);
@@ -133,6 +134,7 @@ export function ApplicationFormDialog({
           className="flex items-center gap-2 px-6 py-3 text-base rounded-lg shadow-sm transition-transform transform-gpu hover:-translate-y-0.5 active:translate-y-0 focus:outline-none"
           variant="default"
           size="lg"
+          disabled ={disabled}
         >
           {children}
           <span className="font-medium">{triggerLabel}</span>

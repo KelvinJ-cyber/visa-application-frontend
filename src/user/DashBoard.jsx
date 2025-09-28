@@ -4,6 +4,7 @@ import { DashBoardSidebar } from "./pages/DashBoardSidebar";
 import { DashBoardOverView } from "./pages/DashboardOverView";
 import { Toaster } from "sonner";
 import { ApplicationSection } from "./pages/ApplicationSection";
+import { DocumentSection } from "./pages/DocumentSection";
 
 
 export default function DashBoard() {
@@ -14,7 +15,9 @@ export default function DashBoard() {
       case "overview":
         return <DashBoardOverView />;
       case "applications":
-        return <ApplicationSection/>
+        return <ApplicationSection />
+      case "documents":
+        return <DocumentSection />
       default:
         return <DashBoardOverView />;
     }
