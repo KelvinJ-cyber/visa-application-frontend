@@ -5,26 +5,29 @@ import { useApi, useApiCall } from "@/hooks/useApi";
 import { apiService } from "@/utils/axios";
 import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { ErrorAlert } from "../../components/ui/ErrorAlert.js";
 import { AlertCircle } from "lucide-react";
 import { X } from "lucide-react";
-import { Download, RefreshCw, } from "lucide-react";
+import { Download, RefreshCw } from "lucide-react";
 import { Upload } from "lucide-react";
 import { CheckCircle } from "lucide-react";
 import { Eye } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useState } from "react";
 
 export function DocumentSection() {
-   const [uploadingDocId, setUploadingDocId] = useState(null);
   const [uploadProgress, setUploadProgress] = useState(0);
   const fileInputRef = useRef(null);
+  const [mainApplicationId, setMainApplicationId] = useState(null);
+  // Track which document is being uploaded
+  const [targetDocumentId, setTargetDocumentId] = useState(null);
 
-  // API calls
+  // API calls (assumed hooks)
   const {
     data: documentsChecklist,
     loading: checklistLoading,
     error: checklistError,
-    refetch: refetchChecklist
+    refetch: refetchChecklist,
   } = useApi(apiService.getDocumentsChecklist, []);
 
   const {
@@ -32,102 +35,129 @@ export function DocumentSection() {
     error: uploadError,
     success: uploadSuccess,
     execute: uploadDocument,
-    reset: resetUpload
+    reset: resetUpload,
   } = useApiCall(apiService.uploadDocument);
 
-  const completedCount = documentsChecklist?.filter(doc => doc.status === "completed").length || 0;
-  const totalCount = documentsChecklist?.length || 0;
-  const requiredCount = documentsChecklist?.filter(doc => doc.required).length || 0;
-  const completedRequiredCount = documentsChecklist?.filter(doc => doc.required && doc.status === "completed").length || 0;
+  // Derived counts
+  const completedCount =
+    (documentsChecklist && documentsChecklist.filter((doc) => doc.status === "completed").length) || 0;
+  const totalCount = (documentsChecklist && documentsChecklist.length) || 0;
+  const requiredCount =
+    (documentsChecklist && documentsChecklist.filter((doc) => doc.required).length) || 0;
+  const completedRequiredCount =
+    (documentsChecklist &&
+      documentsChecklist.filter((doc) => doc.required && doc.status === "completed").length) ||
+    0;
 
-  const handleFileUpload = async (documentId, file) => {
-    if (!file) return;
-    
-    // Basic file validation
+  // fetch mainApplicationId on mount
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await apiService.getApplication();
+        if (!mounted) return;
+        setMainApplicationId(res && res.mainApplicationId ? res.mainApplicationId : null);
+      } catch (err) {
+        console.warn("Could not fetch main application id", err);
+      }
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+
+  const handleFileUpload = async (file) => {
+    if (!file || !targetDocumentId) return;
+
+    // Basic validations
     const maxSize = 5 * 1024 * 1024; // 5MB
-    const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-    
+    const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+
     if (file.size > maxSize) {
-      alert('File size must be less than 5MB');
+      alert("File size must be less than 5MB");
       return;
     }
-    
+
     if (!allowedTypes.includes(file.type)) {
-      alert('Only PDF, JPG, and PNG files are allowed');
+      alert("Only PDF, JPG, and PNG files are allowed");
       return;
     }
 
     try {
-      setUploadingDocId(documentId);
-      console.log('📤 Starting file upload:', {
-        fileName: file.name,
-        fileSize: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
-        fileType: file.type,
-        documentId: documentId,
-        applicationId: 'VA-2025-001'
-      });
-      
-      // Reset progress
       setUploadProgress(0);
-      
-      // Create progress callback for real upload progress
-      const handleProgressUpdate = (progressPercent) => {
-        setUploadProgress(progressPercent);
+
+      const progressCallback = (percent) => {
+        if (typeof percent === "number") setUploadProgress(percent);
       };
-      
-      const response = await uploadDocument('VA-2025-001', documentId, file, handleProgressUpdate);
-      
-      // Complete progress
-      setUploadProgress(100);
-      
-      console.log('✅ Upload successful! Server response:', {
-        message: response.data.message,
-        documentId: response.data.document.id,
-        documentType: response.data.document.documentType,
-        fileName: response.data.document.fileName,
-        uploadedAt: response.data.document.uploadedAt,
-        applicationId: response.data.document.applicationId,
-        fileSize: `${(response.data.document.fileSize / 1024 / 1024).toFixed(2)} MB`,
-        timestamp: response.data.timestamp
-      });
-      
-      // Show success briefly before clearing
-      setTimeout(() => setUploadProgress(0), 1000);
-      
-      refetchChecklist();
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
+
+      // ensure we have app id
+      let appId = mainApplicationId;
+      if (!appId) {
+        const fetched = await apiService.getApplication();
+        appId = fetched && fetched.mainApplicationId ? fetched.mainApplicationId : null;
+        setMainApplicationId(appId);
       }
-    } catch (error) {
-      console.error('Upload failed:', error);
-      // Error handled by hook
-    } finally {
-      setUploadingDocId(null);
+
+  // call uploadDocument(applicationId, documentId, file, onProgress)
+  const response = await uploadDocument(appId, targetDocumentId, file, progressCallback);
+
+      // Animate progress from 10% to 100% for visual effect
+      let start = uploadProgress < 10 ? 10 : uploadProgress;
+      for (let i = start; i <= 100; i += 10) {
+        setUploadProgress(i);
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, 60));
+      }
+      setUploadProgress(100);
+
+      // Keep the bar at 100% for a short moment
+      await new Promise((resolve) => setTimeout(resolve, 600));
+      setUploadProgress(0);
+
+      refetchChecklist();
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      setTargetDocumentId(null);
+      console.log("Upload response:", response);
+    } catch (err) {
+      setTargetDocumentId(null);
+      console.error("Upload failed:", err);
     }
   };
 
+
+  // Accept documentId to know which document is being uploaded
   const triggerFileUpload = (documentId) => {
-    setUploadingDocId(documentId);
+    setTargetDocumentId(documentId);
     if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // reset file input
       fileInputRef.current.click();
     }
   };
 
-  const getStatusIcon = (status) => {
-    if (status === "completed") {
-      return <CheckCircle className="h-5 w-5 text-green-500" />;
-    } else {
-      return <X className="h-5 w-5 text-red-500" />;
+
+  const onFileInputChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (file) {
+      handleFileUpload(file);
     }
   };
 
-  const getStatusBadge = (status) => {
-    if (status === "completed") {
-      return <Badge className="text-green-600 bg-green-50 border-green-200">Uploaded</Badge>;
-    } else {
-      return <Badge variant="outline" className="text-red-600 bg-red-50 border-red-200">Missing</Badge>;
-    }
-  };
+  const getStatusIcon = (status) =>
+    status === "completed" ? <CheckCircle className="h-5 w-5 text-green-500" /> : <X className="h-5 w-5 text-red-500" />;
+
+  const getStatusBadge = (status) =>
+    status === "completed" ? (
+      <Badge className="text-green-600 bg-green-50 border-green-200">Uploaded</Badge>
+    ) : (
+      <Badge variant="outline" className="text-red-600 bg-red-50 border-red-200">
+        Missing
+      </Badge>
+    );
 
   return (
     <div className="space-y-6">
@@ -136,21 +166,15 @@ export function DocumentSection() {
           <h1 className="mb-2">Required Documents</h1>
           <p className="text-muted-foreground">Upload all required documents for your visa application</p>
         </div>
+
         <div className="flex gap-3">
-          <Button 
-            variant="outline" 
-            onClick={refetchChecklist}
-            disabled={checklistLoading}
-            className="gap-2"
-          >
-            <RefreshCw className={`h-4 w-4 ${checklistLoading ? 'animate-spin' : ''}`} />
+          <Button variant="outline" onClick={refetchChecklist} disabled={checklistLoading} className="gap-2">
+            <RefreshCw className={`h-4 w-4 ${checklistLoading ? "animate-spin" : ""}`} />
             Refresh
           </Button>
-          <Button 
-            onClick={() => fileInputRef.current?.click()}
-            className="gap-2 text-base px-6 py-3"
-            size="lg"
-          >
+
+          {/* General upload button (optional, can be hidden or disabled if not needed) */}
+          <Button onClick={() => triggerFileUpload(null)} className="gap-2 text-base px-6 py-3" size="lg">
             <Upload className="h-5 w-5" />
             Upload Documents
           </Button>
@@ -163,21 +187,11 @@ export function DocumentSection() {
         type="file"
         className="hidden"
         accept=".pdf,.jpg,.jpeg,.png"
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (file && uploadingDocId) {
-            handleFileUpload(uploadingDocId, file);
-          }
-        }}
+        onChange={onFileInputChange}
       />
 
       {/* Upload Success/Error Messages */}
-      {uploadError && (
-        <ErrorAlert 
-          error={uploadError}
-          onDismiss={resetUpload}
-        />
-      )}
+      {uploadError && <ErrorAlert error={uploadError} onDismiss={resetUpload} />}
       {uploadSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
           <p className="text-green-800">Document uploaded successfully!</p>
@@ -185,7 +199,7 @@ export function DocumentSection() {
       )}
 
       {/* Upload Progress */}
-      {uploadingDocId && uploadProgress > 0 && uploadProgress < 100 && (
+      {mainApplicationId && uploadProgress > 0 && (
         <Card className="p-4 border-blue-200 bg-blue-50">
           <div className="flex items-center gap-3 mb-2">
             <LoadingSpinner size="sm" />
@@ -193,10 +207,10 @@ export function DocumentSection() {
             <span className="text-blue-600 ml-auto">{Math.round(uploadProgress)}%</span>
           </div>
           <div className="w-full bg-blue-200 rounded-full h-2">
-            <div 
+            <div
               className="bg-blue-500 h-2 rounded-full transition-all duration-300"
               style={{ width: `${uploadProgress}%` }}
-            ></div>
+            />
           </div>
         </Card>
       )}
@@ -215,50 +229,45 @@ export function DocumentSection() {
                 <div className="text-2xl font-medium mb-1">
                   {completedRequiredCount}/{requiredCount}
                 </div>
-                <div className="text-sm text-muted-foreground">
-                  Required documents
-                </div>
+                <div className="text-sm text-muted-foreground">Required documents</div>
               </div>
             </div>
-            
+
             <div className="w-full bg-gray-200 rounded-full h-3 mb-4">
-              <div 
+              <div
                 className="bg-green-500 h-3 rounded-full transition-all duration-500"
-                style={{ width: `${requiredCount > 0 ? (completedRequiredCount / requiredCount) * 100 : 0}%` }}
-              ></div>
+                style={{
+                  width: `${requiredCount > 0 ? (completedRequiredCount / requiredCount) * 100 : 0}%`,
+                }}
+              />
             </div>
-            
+
             <div className="flex items-center justify-between">
               <p className="text-muted-foreground">
-                {completedRequiredCount === requiredCount 
+                {completedRequiredCount === requiredCount
                   ? "All required documents uploaded! Your application is ready for submission."
-                  : `${requiredCount - completedRequiredCount} required document(s) still needed`
-                }
+                  : `${requiredCount - completedRequiredCount} required document(s) still needed`}
               </p>
-              <div className="text-sm text-muted-foreground">
-                Total: {completedCount}/{totalCount}
-              </div>
+              <div className="text-sm text-muted-foreground">Total: {completedCount}/{totalCount}</div>
             </div>
           </Card>
 
           {/* Document Checklist */}
           <div className="grid gap-4">
             {documentsChecklist.map((document) => (
-              <Card 
-                key={document.id} 
+              <Card
+                key={document.id}
                 className={`p-6 transition-all duration-200 ${
-                  document.status === 'completed' 
-                    ? 'border-green-200 bg-green-50/30' 
-                    : document.required 
-                      ? 'border-yellow-200 bg-yellow-50/30' 
-                      : ''
+                  document.status === "completed"
+                    ? "border-green-200 bg-green-50/30"
+                    : document.required
+                    ? "border-yellow-200 bg-yellow-50/30"
+                    : ""
                 }`}
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 mt-1">
-                      {getStatusIcon(document.status)}
-                    </div>
+                    <div className="flex-shrink-0 mt-1">{getStatusIcon(document.status)}</div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-medium">{document.name}</h4>
@@ -277,9 +286,10 @@ export function DocumentSection() {
                       )}
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3 self-start sm:self-center">
                     {getStatusBadge(document.status)}
+
                     {document.status === "completed" ? (
                       <div className="flex gap-2">
                         <Button variant="outline" size="sm" className="gap-2">
@@ -290,33 +300,25 @@ export function DocumentSection() {
                           <Download className="h-4 w-4" />
                           Download
                         </Button>
-                        <Button 
-                          variant="outline" 
-                          size="sm" 
+                        <Button
+                          variant="outline"
+                          size="sm"
                           className="gap-2"
                           onClick={() => triggerFileUpload(document.id)}
-                          disabled={uploadingDocId === document.id}
+                          disabled={uploadLoading}
                         >
-                          {uploadingDocId === document.id ? (
-                            <LoadingSpinner size="sm" />
-                          ) : (
-                            <Upload className="h-4 w-4" />
-                          )}
+                          {uploadLoading ? <LoadingSpinner size="sm" /> : <Upload className="h-4 w-4" />}
                           Replace
                         </Button>
                       </div>
                     ) : (
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         className="gap-2 px-6"
                         onClick={() => triggerFileUpload(document.id)}
-                        disabled={uploadingDocId === document.id}
+                        disabled={uploadLoading}
                       >
-                        {uploadingDocId === document.id ? (
-                          <LoadingSpinner size="sm" />
-                        ) : (
-                          <Upload className="h-4 w-4" />
-                        )}
+                        {uploadLoading ? <LoadingSpinner size="sm" /> : <Upload className="h-4 w-4" />}
                         Upload
                       </Button>
                     )}
@@ -333,12 +335,9 @@ export function DocumentSection() {
                 <CheckCircle className="h-8 w-8 text-green-600" />
                 <div>
                   <h3 className="text-green-800 mb-1">Ready for Submission!</h3>
-                  <p className="text-green-700 text-sm">
-                    All required documents have been uploaded. You can now submit your application.
-                  </p>
+                  <p className="text-green-700 text-sm">All required documents have been uploaded. You can now submit your application.</p>
                 </div>
                 <Button className="ml-auto gap-2">
-                  <FileText className="h-4 w-4" />
                   Submit Application
                 </Button>
               </div>

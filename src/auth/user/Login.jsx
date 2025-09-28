@@ -62,7 +62,7 @@ const Login = () => {
       });
       setTimeout(() => {
         navigate("/dashboard");
-      }, 500);
+      }, 2500);
       setTimeout(() => {
          toast.success("Welcome back, "+ userInfo.firstName, {
           description : "You have successfully logged in.",

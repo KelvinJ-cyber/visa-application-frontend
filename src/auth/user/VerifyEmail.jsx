@@ -42,7 +42,7 @@ const VerifyEmail = () => {
       });
       setTimeout(() => {
         navigate("/login");
-      }, 5500);
+      }, 1500);
     } catch (err) {
       setNotification({
         type: "error",

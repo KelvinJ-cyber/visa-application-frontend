@@ -1,3 +1,4 @@
+// Attach JWT token to uploadApi requests
 import axios from "axios";
 
 const instance = axios.create({
@@ -91,6 +92,29 @@ function getColorForStatus(status) {
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// Helper to persist and load checklist from localStorage
+const CHECKLIST_KEY = 'documentsChecklist';
+
+function loadChecklist() {
+  const stored = localStorage.getItem(CHECKLIST_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      // fallback to default if corrupted
+      return mockData.documentsChecklist;
+    }
+  }
+  return mockData.documentsChecklist;
+}
+
+function saveChecklist(checklist) {
+  localStorage.setItem(CHECKLIST_KEY, JSON.stringify(checklist));
+}
+
+// Use persisted checklist if available
+mockData.documentsChecklist = loadChecklist();
+
 export const apiService = {
   async getApplicationStatus() {
     await delay(800); // Simulate network delay
@@ -119,10 +143,12 @@ export const apiService = {
     return { data: mockData.upcomingAppointments };
   },
 
+
+
   async getApplication() {
     await delay(1000);
     const { data } = await instance.get("/api/user/applications"); 
-    const transformedApplication = (Array.isArray(data) ? data : []).map(
+    const transformedApplication = data.map(
       (app) => ({
         ...app,
         status: (app.status || "").toUpperCase(),
@@ -130,26 +156,28 @@ export const apiService = {
         statusColor: getColorForStatus(app.status),
       })
     );
-    return { data: transformedApplication };
+   const mainApplicationId = transformedApplication[0]?.applicationId ?? null;
+    return { data: transformedApplication, mainApplicationId  };
   },
+
     // Documents APIs
    async getDocumentsChecklist(applicationId) {
     await delay(600);
+    // Always return the latest from localStorage
+    mockData.documentsChecklist = loadChecklist();
     return { data: mockData.documentsChecklist };
   },
 
+  //! Not in use for now
   async getUploadedDocuments(applicationId) {
     try {
-      console.log(`📋 Fetching uploaded documents for application: ${applicationId}`);
+      console.log(` Fetching uploaded documents for application: ${applicationId}`);
       
       // Real implementation: Make actual API call
       const response = await api.get(`/applications/${applicationId}/documents`);
       
-      console.log('✅ Successfully fetched uploaded documents:', response.data);
-      return response;
-      
     } catch (error) {
-      console.error('❌ Failed to fetch uploaded documents:', error);
+      console.error(' Failed to fetch uploaded documents:', error);
       
       // Handle different types of errors
       if (error.response) {
@@ -168,18 +196,9 @@ export const apiService = {
       // Create FormData for the actual API request
       const formData = new FormData();
       
-      // Add the required fields
-      formData.append('id', `DOC-${Date.now()}-${Math.floor(Math.random() * 1000)}`);
-      formData.append('documentType', mockData.documentsChecklist.find(doc => doc.id === documentId)?.name || 'Unknown Document');
-      formData.append('fileName', file.name);
-      formData.append('uploadedAt', new Date().toISOString());
-      formData.append('applicationId', applicationId);
-      formData.append('data', file); // The actual file data
-      
-      console.log('📤 Making real API call to upload document...');
-      
-      // Real implementation: Make actual API call
-      const response = await uploadApi.post('/upload/1', formData, {
+  // Add the required fields
+  formData.append('file', file); // The actual file data
+  const response = await uploadApi.post(`/upload/${applicationId}/${documentId}`, formData, {
         onUploadProgress: (progressEvent) => {
           if (progressEvent.lengthComputable) {
             const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
@@ -190,9 +209,6 @@ export const apiService = {
               onProgress(percentCompleted);
             }
           }
-        },
-        headers: {
-          'Content-Type': 'multipart/form-data',
         },
         timeout: 30000, // 30 second timeout for uploads
       });
@@ -210,6 +226,8 @@ export const apiService = {
           fileName: file.name,
           fileSize: file.size
         };
+        // Persist to localStorage
+        saveChecklist(mockData.documentsChecklist);
       }
       
       return response;
@@ -248,7 +266,7 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor: handle errors like 401
+// Response interceptor: handle errors like 403
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -258,6 +276,17 @@ instance.interceptors.response.use(
     }
     return Promise.reject(error);
   }
+);
+// Request interceptor for uploadApi: attach token
+uploadApi.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 export default instance;
