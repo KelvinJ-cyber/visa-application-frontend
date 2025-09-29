@@ -90,16 +90,14 @@ const AdminLogin = () => {
   return (
     <>
       <Card
-        className=" h-120 shadow-lg w-100 mt-40"
+        className=" h-120 flex ml-230 shadow-lg w-100 mt-40"
         style={{ fontFamily: "var(--font-ubuntu)" }}
       >
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-gray-800">
             Welcome Admin !
           </CardTitle>
-          <CardDescription>
-            Authorized Personnel Only
-          </CardDescription>
+          <CardDescription>Authorized Personnel Only</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -107,7 +105,7 @@ const AdminLogin = () => {
               <Label htmlFor="email">Email</Label>
               <div className="relative">
                 <Mail className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
+                <input
                   id="email"
                   name="email"
                   type="email"
@@ -119,7 +117,7 @@ const AdminLogin = () => {
                       email: e.target.value,
                     })
                   }
-                  className="pl-10"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:border-[#333] focus:ring-2 focus:ring-[#333]/10 pl-9"
                   disabled={loading}
                 />
               </div>
@@ -131,7 +129,7 @@ const AdminLogin = () => {
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <Input
+                <input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
@@ -143,7 +141,7 @@ const AdminLogin = () => {
                       password: e.target.value,
                     })
                   }
-                  className="pl-10 pr-10"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-sm transition-colors focus:outline-none focus:border-[#333] focus:ring-2 focus:ring-[#333]/10 pl-9"
                   disabled={loading}
                 />
                 <button
@@ -204,9 +202,7 @@ const AdminLogin = () => {
             </Button>
 
             <div className="text-center">
-              <span className="text-sm text-gray-600">
-                Not an Admin?{" "}
-              </span>
+              <span className="text-sm text-gray-600">Not an Admin? </span>
               <button
                 type="button"
                 onClick={() => navigate("/login")}

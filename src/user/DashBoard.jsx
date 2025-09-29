@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { DashBoardSidebar } from "./pages/DashBoardSidebar";
 import { DashBoardOverView } from "./pages/DashboardOverView";
-import { Toaster } from "sonner";
 import { ApplicationSection } from "./pages/ApplicationSection";
 import { DocumentSection } from "./pages/DocumentSection";
 
@@ -30,7 +29,6 @@ export default function DashBoard() {
         />
         <main className="flex-1 overflow-auto">
           <div className="p-8">{renderSection()}</div>
-          <Toaster richColors position="bottom-right" />
         </main>
       </div>
     );

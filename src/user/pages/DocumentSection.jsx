@@ -14,6 +14,7 @@ import { CheckCircle } from "lucide-react";
 import { Eye } from "lucide-react";
 import { useRef, useEffect } from "react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function DocumentSection() {
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -40,13 +41,19 @@ export function DocumentSection() {
 
   // Derived counts
   const completedCount =
-    (documentsChecklist && documentsChecklist.filter((doc) => doc.status === "completed").length) || 0;
+    (documentsChecklist &&
+      documentsChecklist.filter((doc) => doc.status === "completed").length) ||
+    0;
   const totalCount = (documentsChecklist && documentsChecklist.length) || 0;
   const requiredCount =
-    (documentsChecklist && documentsChecklist.filter((doc) => doc.required).length) || 0;
+    (documentsChecklist &&
+      documentsChecklist.filter((doc) => doc.required).length) ||
+    0;
   const completedRequiredCount =
     (documentsChecklist &&
-      documentsChecklist.filter((doc) => doc.required && doc.status === "completed").length) ||
+      documentsChecklist.filter(
+        (doc) => doc.required && doc.status === "completed"
+      ).length) ||
     0;
 
   // fetch mainApplicationId on mount
@@ -56,7 +63,7 @@ export function DocumentSection() {
       try {
         const res = await apiService.getApplication();
         if (!mounted) return;
-        setMainApplicationId(res && res.mainApplicationId ? res.mainApplicationId : null);
+        setMainApplicationId(res?.mainApplicationId ?? null);
       } catch (err) {
         console.warn("Could not fetch main application id", err);
       }
@@ -66,6 +73,19 @@ export function DocumentSection() {
     };
   }, []);
 
+  
+ const handleSubmitApplication = async () => {
+    try {
+      const { data } = await apiService.submitApplication(mainApplicationId);
+      toast.info(data.message || "Application submitted successfully!");
+      return data;
+    } catch (error) {
+      toast.error(
+        error.response?.data?.message ||
+        "Failed to submit application. Please try again."
+      );
+    }
+ }
 
   const handleFileUpload = async (file) => {
     if (!file || !targetDocumentId) return;
@@ -95,12 +115,20 @@ export function DocumentSection() {
       let appId = mainApplicationId;
       if (!appId) {
         const fetched = await apiService.getApplication();
-        appId = fetched && fetched.mainApplicationId ? fetched.mainApplicationId : null;
+        appId =
+          fetched && fetched.mainApplicationId
+            ? fetched.mainApplicationId
+            : null;
         setMainApplicationId(appId);
       }
 
-  // call uploadDocument(applicationId, documentId, file, onProgress)
-  const response = await uploadDocument(appId, targetDocumentId, file, progressCallback);
+      // call uploadDocument(applicationId, documentId, file, onProgress)
+      const response = await uploadDocument(
+        appId,
+        targetDocumentId,
+        file,
+        progressCallback
+      );
 
       // Animate progress from 10% to 100% for visual effect
       let start = uploadProgress < 10 ? 10 : uploadProgress;
@@ -129,7 +157,6 @@ export function DocumentSection() {
     }
   };
 
-
   // Accept documentId to know which document is being uploaded
   const triggerFileUpload = (documentId) => {
     setTargetDocumentId(documentId);
@@ -139,7 +166,6 @@ export function DocumentSection() {
     }
   };
 
-
   const onFileInputChange = (e) => {
     const file = e.target.files && e.target.files[0];
     if (file) {
@@ -148,13 +174,22 @@ export function DocumentSection() {
   };
 
   const getStatusIcon = (status) =>
-    status === "completed" ? <CheckCircle className="h-5 w-5 text-green-500" /> : <X className="h-5 w-5 text-red-500" />;
+    status === "completed" ? (
+      <CheckCircle className="h-5 w-5 text-green-500" />
+    ) : (
+      <X className="h-5 w-5 text-red-500" />
+    );
 
   const getStatusBadge = (status) =>
     status === "completed" ? (
-      <Badge className="text-green-600 bg-green-50 border-green-200">Uploaded</Badge>
+      <Badge className="text-green-600 bg-green-50 border-green-200">
+        Uploaded
+      </Badge>
     ) : (
-      <Badge variant="outline" className="text-red-600 bg-red-50 border-red-200">
+      <Badge
+        variant="outline"
+        className="text-red-600 bg-red-50 border-red-200"
+      >
         Missing
       </Badge>
     );
@@ -164,17 +199,31 @@ export function DocumentSection() {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="mb-2">Required Documents</h1>
-          <p className="text-muted-foreground">Upload all required documents for your visa application</p>
+          <p className="text-muted-foreground">
+            Upload all required documents for your visa application
+          </p>
         </div>
 
         <div className="flex gap-3">
-          <Button variant="outline" onClick={refetchChecklist} disabled={checklistLoading} className="gap-2">
-            <RefreshCw className={`h-4 w-4 ${checklistLoading ? "animate-spin" : ""}`} />
+          <Button
+            variant="outline"
+            onClick={refetchChecklist}
+            disabled={checklistLoading}
+            className="gap-2"
+          >
+            <RefreshCw
+              className={`h-4 w-4 ${checklistLoading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
 
           {/* General upload button (optional, can be hidden or disabled if not needed) */}
-          <Button onClick={() => triggerFileUpload(null)} className="gap-2 text-base px-6 py-3" size="lg">
+          <Button
+            disabled={true}
+            onClick={() => triggerFileUpload(null)}
+            className="gap-2 text-base px-6 py-3"
+            size="lg"
+          >
             <Upload className="h-5 w-5" />
             Upload Documents
           </Button>
@@ -191,7 +240,9 @@ export function DocumentSection() {
       />
 
       {/* Upload Success/Error Messages */}
-      {uploadError && <ErrorAlert error={uploadError} onDismiss={resetUpload} />}
+      {uploadError && (
+        <ErrorAlert error={uploadError} onDismiss={resetUpload} />
+      )}
       {uploadSuccess && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
           <p className="text-green-800">Document uploaded successfully!</p>
@@ -204,7 +255,9 @@ export function DocumentSection() {
           <div className="flex items-center gap-3 mb-2">
             <LoadingSpinner size="sm" />
             <span className="text-blue-800">Uploading document...</span>
-            <span className="text-blue-600 ml-auto">{Math.round(uploadProgress)}%</span>
+            <span className="text-blue-600 ml-auto">
+              {Math.round(uploadProgress)}%
+            </span>
           </div>
           <div className="w-full bg-blue-200 rounded-full h-2">
             <div
@@ -229,7 +282,9 @@ export function DocumentSection() {
                 <div className="text-2xl font-medium mb-1">
                   {completedRequiredCount}/{requiredCount}
                 </div>
-                <div className="text-sm text-muted-foreground">Required documents</div>
+                <div className="text-sm text-muted-foreground">
+                  Required documents
+                </div>
               </div>
             </div>
 
@@ -237,7 +292,11 @@ export function DocumentSection() {
               <div
                 className="bg-green-500 h-3 rounded-full transition-all duration-500"
                 style={{
-                  width: `${requiredCount > 0 ? (completedRequiredCount / requiredCount) * 100 : 0}%`,
+                  width: `${
+                    requiredCount > 0
+                      ? (completedRequiredCount / requiredCount) * 100
+                      : 0
+                  }%`,
                 }}
               />
             </div>
@@ -246,9 +305,13 @@ export function DocumentSection() {
               <p className="text-muted-foreground">
                 {completedRequiredCount === requiredCount
                   ? "All required documents uploaded! Your application is ready for submission."
-                  : `${requiredCount - completedRequiredCount} required document(s) still needed`}
+                  : `${
+                      requiredCount - completedRequiredCount
+                    } required document(s) still needed`}
               </p>
-              <div className="text-sm text-muted-foreground">Total: {completedCount}/{totalCount}</div>
+              <div className="text-sm text-muted-foreground">
+                Total: {completedCount}/{totalCount}
+              </div>
             </div>
           </Card>
 
@@ -267,21 +330,29 @@ export function DocumentSection() {
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                   <div className="flex items-start gap-4">
-                    <div className="flex-shrink-0 mt-1">{getStatusIcon(document.status)}</div>
+                    <div className="flex-shrink-0 mt-1">
+                      {getStatusIcon(document.status)}
+                    </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <h4 className="font-medium">{document.name}</h4>
                         {document.required && (
-                          <Badge variant="outline" className="text-orange-600 bg-orange-50 border-orange-200 text-xs">
+                          <Badge
+                            variant="outline"
+                            className="text-orange-600 bg-orange-50 border-orange-200 text-xs"
+                          >
                             Required
                           </Badge>
                         )}
                       </div>
-                      <p className="text-muted-foreground text-sm mb-2">{document.description}</p>
+                      <p className="text-muted-foreground text-sm mb-2">
+                        {document.description}
+                      </p>
                       {document.uploadedDate && (
                         <p className="text-xs text-muted-foreground flex items-center gap-1">
                           <CheckCircle className="h-3 w-3 text-green-500" />
-                          Uploaded on {new Date(document.uploadedDate).toLocaleDateString()}
+                          Uploaded on{" "}
+                          {new Date(document.uploadedDate).toLocaleDateString()}
                         </p>
                       )}
                     </div>
@@ -307,7 +378,11 @@ export function DocumentSection() {
                           onClick={() => triggerFileUpload(document.id)}
                           disabled={uploadLoading}
                         >
-                          {uploadLoading ? <LoadingSpinner size="sm" /> : <Upload className="h-4 w-4" />}
+                          {uploadLoading ? (
+                            <LoadingSpinner size="sm" />
+                          ) : (
+                            <Upload className="h-4 w-4" />
+                          )}
                           Replace
                         </Button>
                       </div>
@@ -318,7 +393,11 @@ export function DocumentSection() {
                         onClick={() => triggerFileUpload(document.id)}
                         disabled={uploadLoading}
                       >
-                        {uploadLoading ? <LoadingSpinner size="sm" /> : <Upload className="h-4 w-4" />}
+                        {uploadLoading ? (
+                          <LoadingSpinner size="sm" />
+                        ) : (
+                          <Upload className="h-4 w-4" />
+                        )}
                         Upload
                       </Button>
                     )}
@@ -335,11 +414,12 @@ export function DocumentSection() {
                 <CheckCircle className="h-8 w-8 text-green-600" />
                 <div>
                   <h3 className="text-green-800 mb-1">Ready for Submission!</h3>
-                  <p className="text-green-700 text-sm">All required documents have been uploaded. You can now submit your application.</p>
+                  <p className="text-green-700 text-sm">
+                    All required documents have been uploaded. You can now
+                    submit your application.
+                  </p>
                 </div>
-                <Button className="ml-auto gap-2">
-                  Submit Application
-                </Button>
+                <Button onClick = {handleSubmitApplication}  className="ml-auto gap-2">Submit Application</Button>
               </div>
             </Card>
           )}

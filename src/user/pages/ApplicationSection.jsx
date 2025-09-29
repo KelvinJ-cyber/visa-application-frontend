@@ -40,6 +40,7 @@ export function ApplicationSection() {
     refetch: refetchApplications,
   } = useApi(apiService.getApplication, []);
 
+
   // Filter applications based on search and status
   const filteredApplications =
     transformedApplication?.filter((app) => {
@@ -222,10 +223,10 @@ export function ApplicationSection() {
                     >
                       {transformedApplication.status}
                     </Badge>
-                    <Button variant="outline" size="sm" className="gap-2">
+                    {/* <Button variant="outline" size="sm" className="gap-2">
                       <Eye className="h-4 w-4" />
                       View Details
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
 

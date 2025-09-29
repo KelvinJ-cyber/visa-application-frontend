@@ -15,6 +15,16 @@ const uploadApi = axios.create({
     'Content-Type': 'multipart/form-data',
   },
 });
+uploadApi.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 const mockData = {
   upcomingAppointments: [
     {
@@ -160,6 +170,12 @@ export const apiService = {
     return { data: transformedApplication, mainApplicationId  };
   },
 
+  async submitApplication(applicationId){
+    await delay(500);
+    const { data } = await instance.post(`/api/user/applications/${applicationId}/submit`);
+    return { data };
+  },
+
     // Documents APIs
    async getDocumentsChecklist(applicationId) {
     await delay(600);
@@ -168,16 +184,18 @@ export const apiService = {
     return { data: mockData.documentsChecklist };
   },
 
-  //! Not in use for now
   async getUploadedDocuments(applicationId) {
     try {
-      console.log(` Fetching uploaded documents for application: ${applicationId}`);
+      console.log(`📋 Fetching uploaded documents for application: ${applicationId}`);
       
       // Real implementation: Make actual API call
       const response = await api.get(`/applications/${applicationId}/documents`);
       
+      console.log('✅ Successfully fetched uploaded documents:', response.data);
+      return response;
+      
     } catch (error) {
-      console.error(' Failed to fetch uploaded documents:', error);
+      console.error('❌ Failed to fetch uploaded documents:', error);
       
       // Handle different types of errors
       if (error.response) {
@@ -198,12 +216,14 @@ export const apiService = {
       
   // Add the required fields
   formData.append('file', file); // The actual file data
+      
+      console.log(' Making real API call to upload document...');
+      
+  
   const response = await uploadApi.post(`/upload/${applicationId}/${documentId}`, formData, {
         onUploadProgress: (progressEvent) => {
           if (progressEvent.lengthComputable) {
             const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            console.log(`Upload Progress: ${percentCompleted}%`);
-            
             // Call the progress callback if provided
             if (onProgress && typeof onProgress === 'function') {
               onProgress(percentCompleted);
@@ -213,10 +233,7 @@ export const apiService = {
         timeout: 30000, // 30 second timeout for uploads
       });
       
-      console.log('✅ Document upload successful:', response.data);
-      
       // Update local mock data to reflect the successful upload
-      // (In a real app, you'd typically refetch from the server)
       const docIndex = mockData.documentsChecklist.findIndex(doc => doc.id === documentId);
       if (docIndex >= 0) {
         mockData.documentsChecklist[docIndex] = {
@@ -266,7 +283,7 @@ instance.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response interceptor: handle errors like 403
+// Response interceptor: handle errors like 401
 instance.interceptors.response.use(
   (response) => response,
   (error) => {
@@ -276,17 +293,6 @@ instance.interceptors.response.use(
     }
     return Promise.reject(error);
   }
-);
-// Request interceptor for uploadApi: attach token
-uploadApi.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("jwtToken");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
 );
 
 export default instance;
