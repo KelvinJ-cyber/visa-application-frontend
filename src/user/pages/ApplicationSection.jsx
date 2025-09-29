@@ -15,7 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useApi } from "@/hooks/useApi";
-import { apiService } from "@/utils/axios";
+import { apiService } from "@/services/axios";
 import { Eye } from "lucide-react";
 import { Filter } from "lucide-react";
 import { MapPin } from "lucide-react";

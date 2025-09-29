@@ -11,9 +11,8 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 import React from "react";
-// If your global styles are in 'src/styles/globals.css', use the following import instead:
 import "@/styles/globals.css";
-import LogoutButton from "../../utils/LogoutButton.jsx";
+import LogoutButton from "@/services/LogoutButton.jsx";
 
 
 

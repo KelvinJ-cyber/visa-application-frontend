@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
-import axios from "../../utils/axios.js";
+import axios from "../../services/axios.js";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
 

@@ -2,19 +2,23 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { LoadingCard } from "@/components/ui/LoadingSpinner";
 import { useApi, useApiCall } from "@/hooks/useApi";
-import { apiService } from "@/utils/axios";
+import { apiService } from "@/services/axios.js";
 import { Badge } from "@/components/ui/badge";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { ErrorAlert } from "../../components/ui/ErrorAlert.js";
-import { AlertCircle } from "lucide-react";
-import { X } from "lucide-react";
-import { Download, RefreshCw } from "lucide-react";
-import { Upload } from "lucide-react";
-import { CheckCircle } from "lucide-react";
-import { Eye } from "lucide-react";
+import { ErrorAlert } from "@/components/ui/ErrorAlert.js";
+import {
+  AlertCircle,
+  X,
+  Download,
+  RefreshCw,
+  Upload,
+  CheckCircle,
+  Eye,
+} from "lucide-react";
 import { useRef, useEffect } from "react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function DocumentSection() {
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -22,6 +26,7 @@ export function DocumentSection() {
   const [mainApplicationId, setMainApplicationId] = useState(null);
   // Track which document is being uploaded
   const [targetDocumentId, setTargetDocumentId] = useState(null);
+  const [submitted, setSubmitted] = useState(false);
 
   // API calls (assumed hooks)
   const {
@@ -73,19 +78,19 @@ export function DocumentSection() {
     };
   }, []);
 
-  
- const handleSubmitApplication = async () => {
+  const handleSubmitApplication = async () => {
     try {
       const { data } = await apiService.submitApplication(mainApplicationId);
+      setSubmitted(true);
       toast.info(data.message || "Application submitted successfully!");
       return data;
     } catch (error) {
       toast.error(
         error.response?.data?.message ||
-        "Failed to submit application. Please try again."
+          "Failed to submit application. Please try again."
       );
     }
- }
+  };
 
   const handleFileUpload = async (file) => {
     if (!file || !targetDocumentId) return;
@@ -419,7 +424,30 @@ export function DocumentSection() {
                     submit your application.
                   </p>
                 </div>
-                <Button onClick = {handleSubmitApplication}  className="ml-auto gap-2">Submit Application</Button>
+                {submitted ? (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="ml-auto">
+                        <Button
+                          className="gap-2"
+                          disabled
+                        >
+                          Submit Application
+                        </Button>
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>You have submitted your application</p>
+                    </TooltipContent>
+                  </Tooltip>
+                ) : (
+                  <Button
+                    onClick={handleSubmitApplication}
+                    className="ml-auto gap-2"
+                  >
+                    Submit Application
+                  </Button>
+                )}
               </div>
             </Card>
           )}

@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import axios from "../../utils/axios.js";
+import axios from "../../services/axios.js";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";

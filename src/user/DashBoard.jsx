@@ -4,6 +4,8 @@ import { DashBoardSidebar } from "./pages/DashBoardSidebar";
 import { DashBoardOverView } from "./pages/DashboardOverView";
 import { ApplicationSection } from "./pages/ApplicationSection";
 import { DocumentSection } from "./pages/DocumentSection";
+import ComingSoon from "./pages/ComingSoon";
+import { ProFileSection } from "./pages/ProfileSection";
 
 
 export default function DashBoard() {
@@ -17,6 +19,12 @@ export default function DashBoard() {
         return <ApplicationSection />
       case "documents":
         return <DocumentSection />
+      case "payments":
+        return <ComingSoon />;  
+      case "support":
+        return <ComingSoon />;
+      case "profile":
+        return <ProFileSection/>;        
       default:
         return <DashBoardOverView />;
     }

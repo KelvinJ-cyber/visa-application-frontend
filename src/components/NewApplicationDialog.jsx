@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
-import axios from "@/utils/axios.js";
+import axios from "@/services/axios.js";
 import {
   Select,
   SelectTrigger,

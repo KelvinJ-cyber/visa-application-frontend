@@ -1,7 +1,7 @@
 import { useState } from "react";
 import React from "react";
 import { useMemo } from "react";
-import { apiService } from "../../utils/axios";
+import { apiService } from "@/services/axios";
 import "@/styles/globals.css";
 import { useApi } from "@/hooks/useApi";
 import {
@@ -18,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { LoadingCard, SkeletonCard } from "@/components/ui/LoadingSpinner";
-import { ErrorAlert } from "../../components/ui/ErrorAlert.js";
+import { ErrorAlert } from "@/components/ui/ErrorAlert.js";
 import "@/styles/globals.css";
 
 export function DashBoardOverView() {
@@ -109,7 +109,7 @@ export function DashBoardOverView() {
   const getStepIcon = (stepIndex, currentStep) => {
     if (stepIndex < currentStep) {
       return <CheckCircle className="h-5 w-5 text-green-500" />;
-    } else if (stepIndex == 3 && currentStep == 4) {
+    } else if (stepIndex === 3 && currentStep === 3) {
       return <CheckCircle className="h-5 w-5 text-green-500" />;
     } else if (stepIndex === currentStep) {
       return <Clock className="h-5 w-5 text-yellow-500" />;
