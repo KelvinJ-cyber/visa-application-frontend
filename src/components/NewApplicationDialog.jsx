@@ -84,7 +84,7 @@ export function ApplicationFormDialog({
       nationality: nationality.trim(),
       createdAt: new Date().toISOString(),
     };
-    
+
     setLoading(true);
     try {
       const response = await axios.post(
@@ -134,7 +134,7 @@ export function ApplicationFormDialog({
           className="flex items-center gap-2 px-6 py-3 text-base rounded-lg shadow-sm transition-transform transform-gpu hover:-translate-y-0.5 active:translate-y-0 focus:outline-none"
           variant="default"
           size="lg"
-          disabled ={disabled}
+          disabled={disabled}
         >
           {children}
           <span className="font-medium">{triggerLabel}</span>
@@ -178,7 +178,7 @@ export function ApplicationFormDialog({
           )}
 
           {successMsg.message && (
-            <Alert className="flex items-start gap-3 border-black/5">
+            <Alert className="flex items-start gap-3  border-green-100 bg-green-100">
               <CheckCircle className="w-5 h-5 text-green-600" />
               <div>
                 <AlertTitle className="font-medium">Success</AlertTitle>

@@ -61,7 +61,7 @@ export function DocumentSection() {
       ).length) ||
     0;
 
-  // fetch mainApplicationId on mount
+  // fetch mainApplicationId and check application status on mount
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -69,6 +69,13 @@ export function DocumentSection() {
         const res = await apiService.getApplication();
         if (!mounted) return;
         setMainApplicationId(res?.mainApplicationId ?? null);
+        
+        // Check if application is already submitted
+        if (res?.data && res.data.length > 0) {
+          const mainApplication = res.data[0];
+          const isSubmitted = mainApplication.status === "SUBMITTED" || mainApplication.status === "UNDER_REVIEW" || mainApplication.status === "APPROVED" || mainApplication.status === "REJECTED" ;
+          setSubmitted(isSubmitted);
+        }
       } catch (err) {
         console.warn("Could not fetch main application id", err);
       }
@@ -430,7 +437,7 @@ export function DocumentSection() {
                       <span className="ml-auto">
                         <Button
                           className="gap-2"
-                          disabled
+                          disabled={true}
                         >
                           Submit Application
                         </Button>
