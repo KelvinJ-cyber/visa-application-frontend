@@ -81,6 +81,10 @@ const Login = () => {
         });
       }, 2500);
     } catch (err) {
+      if (err.response && err.response.status === 403) {
+        toast.error("Your account has been deactivated. Contact support.");
+        return;
+      }
       toast.error(
         err.response?.data?.message ||
           "Invalid credentials. Please try again"

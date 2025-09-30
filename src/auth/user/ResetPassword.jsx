@@ -95,7 +95,7 @@ const ResetPassword = () => {
       setNotification({
         type: "error",
         message:
-          err.response?.data?.error ||
+          err.data?.error ||
           "Failed to reset password. Check OTP and try again.",
       });
     } finally {

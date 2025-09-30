@@ -289,7 +289,10 @@ instance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 403) {
       localStorage.removeItem("jwtToken");
-      window.location.href = "/login";
+      setTimeout(()=> {
+        window.location.href = "/login";
+      } , 2000)
+     
     }
     return Promise.reject(error);
   }

@@ -5,6 +5,7 @@ import { Loader2, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import axios from "../../services/axios.js";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -49,18 +50,20 @@ const Register = () => {
         password: registerFormData.password,
       });
 
-      setMessage({
-        type: "success",
-        text: " Registration successful! Please check your email for verification code.",
-      });
+      // setMessage({
+      //   type: "success",
+      //   text: " Registration successful! Please check your email for verification code.",
+      // });
+      toast.success(" Registration successful! Please check your email for verification code.");
       setTimeout(() => navigate("/verify"), 1500);
     } catch (error) {
-      setMessage({
-        type: "error",
-        text:
-          error.response?.data?.message ||
-          "Registration failed. Please try again.",
-      });
+      // setMessage({
+      //   type: "error",
+      //   text:
+      //     error.response?.data?.message ||
+      //     "Registration failed. Please try again.",
+      // });
+      toast.error("Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }

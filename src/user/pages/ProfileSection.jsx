@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import { ChangePasswordDailog } from "@/components/ChangePasswordDailog";
+import DeactivateAccountModal from "@/components/DeactivateAccountDialog";
 
 export function ProFileSection() {
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
@@ -163,12 +164,16 @@ export function ProFileSection() {
         <div className="space-y-4">
           <div className="flex items-center justify-between p-4 bg-red-50 rounded-lg border border-red-200">
             <div>
-              <h4 className="mb-1 text-red-800">Delete Account</h4>
+              <h4 className="mb-1 text-red-800">Deactivate Account</h4>
               <p className="text-red-600 text-sm">
-                Permanently delete your account and all associated data
+                Deactivating your account will diasble your profile and you wont
+                get access to it!
               </p>
             </div>
-            <Button variant="destructive">Delete Account</Button>
+            <Button onClick={() => setOpen(true)} variant="destructive">
+              Deactivated Account
+            </Button>
+            <DeactivateAccountModal open={open} onOpenChange={setOpen}/>
           </div>
         </div>
       </Card>

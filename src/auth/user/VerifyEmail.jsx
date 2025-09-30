@@ -5,6 +5,7 @@ import axios from "../../services/axios.js";
 import { Loader2, CheckCircle, AlertCircle, ArrowRight } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const VerifyEmail = () => {
   const [verification, setVerification] = useState({
@@ -40,14 +41,18 @@ const VerifyEmail = () => {
         type: "success",
         content: response.data?.message || "Verification successful!",
       });
+      toast.success(response.data?.message, "Congrats" )
       setTimeout(() => {
         navigate("/login");
       }, 1500);
     } catch (err) {
-      setNotification({
-        type: "error",
-        content: err.response?.data?.message || "Verification failed",
-      });
+      // setNotification({
+      //   type: "error",
+      //   content: err.response?.data?.message || "Verification failed",
+      // });
+      toast.error(
+        err.response?.data?.message || "Verification failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }
