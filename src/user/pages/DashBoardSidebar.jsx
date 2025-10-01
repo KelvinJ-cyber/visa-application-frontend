@@ -12,7 +12,7 @@ import {
 import { useEffect } from "react";
 import React from "react";
 import "@/styles/globals.css";
-import LogoutButton from "@/services/LogoutButton.jsx";
+import LogoutButton from "@/components/LogoutButton.jsx";
 
 
 
