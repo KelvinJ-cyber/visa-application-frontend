@@ -12,7 +12,8 @@ import DeactivateAccountModal from "@/components/DeactivateAccountDialog";
 
 export function ProFileSection() {
   const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
-  const [open, setOpen] = useState(false);
+  const [openChangePassword, setOpenChangePassword] = useState(false);
+  const [openDeactivate, setOpenDeactivate] = useState(false);
 
   return (
     <>
@@ -135,14 +136,17 @@ export function ProFileSection() {
               </p>
             </div>
             <Button
-              onClick={() => setOpen(true)}
+              onClick={() => {
+                setOpenChangePassword(true);
+                setOpenDeactivate(false);
+              }}
               variant="outline"
               className="gap-2"
             >
               <Lock className="h-4 w-4" />
               Change Password
             </Button>
-            <ChangePasswordDailog open={open} onOpenChange={setOpen} />
+            <ChangePasswordDailog open={openChangePassword} onOpenChange={setOpenChangePassword} />
           </div>
 
           <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
@@ -170,10 +174,13 @@ export function ProFileSection() {
                 get access to it!
               </p>
             </div>
-            <Button onClick={() => setOpen(true)} variant="destructive">
+            <Button onClick={() => {
+                setOpenDeactivate(true);
+                setOpenChangePassword(false);
+              }} variant="destructive">
               Deactivated Account
             </Button>
-            <DeactivateAccountModal open={open} onOpenChange={setOpen}/>
+            <DeactivateAccountModal open={openDeactivate} onOpenChange={setOpenDeactivate}/>
           </div>
         </div>
       </Card>

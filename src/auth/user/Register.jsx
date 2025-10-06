@@ -6,6 +6,7 @@ import axios from "../../services/axios.js";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import instance from "../../services/axios.js";
 
 const Register = () => {
   const [loading, setLoading] = useState(false);
@@ -43,7 +44,7 @@ const Register = () => {
     }
 
     try {
-      const response = await axios.post("/api/auth/user/register", {
+      const response = await instance.post("/api/auth/user/register", {
         firstName: registerFormData.firstName,
         lastName: registerFormData.lastName,
         email: registerFormData.email,
@@ -57,12 +58,6 @@ const Register = () => {
       toast.success(" Registration successful! Please check your email for verification code.");
       setTimeout(() => navigate("/verify"), 1500);
     } catch (error) {
-      // setMessage({
-      //   type: "error",
-      //   text:
-      //     error.response?.data?.message ||
-      //     "Registration failed. Please try again.",
-      // });
       toast.error("Registration failed. Please try again.");
     } finally {
       setLoading(false);

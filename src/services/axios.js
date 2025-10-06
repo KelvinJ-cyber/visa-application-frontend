@@ -4,7 +4,7 @@ import axios from "axios";
 const instance = axios.create({
   baseURL: "http://localhost:8080",
   headers: { "Content-Type": "application/json" },
-  timeout: 10000, // Request timeout in milliseconds
+  timeout: 200000, // Request timeout in milliseconds
 });
 
 // Create a separate instance for file uploads
