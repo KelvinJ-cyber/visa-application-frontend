@@ -6,6 +6,7 @@ import { Loader2, CheckCircle, AlertCircle, ArrowRight } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import instance from "../../services/axios.js";
 
 const VerifyEmail = () => {
   const [verification, setVerification] = useState({
@@ -64,7 +65,7 @@ const VerifyEmail = () => {
     setNotification({ type: "", content: "" });
 
     try {
-      const response = await axios.post("/api/auth/user/resend-verification", {
+      const response = await instance.post("/api/auth/user/resend-verification", {
         email: verification.email,
       });
       setNotification({

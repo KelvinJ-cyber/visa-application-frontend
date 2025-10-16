@@ -1,14 +1,7 @@
 import React from "react";
 import { LogOut } from "lucide-react";
 
-/**
- * LogoutButton
- *
- * Props:
- * - onLogout: optional function to execute on logout (if omitted, default behavior clears jwtToken and navigates to /login)
- * - className: optional extra classes
- * - label: optional visible label (defaults to "Logout")
- */
+
 export default function LogoutButton() {
   const handleLogout = () => {
     try {

@@ -13,6 +13,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import instance from "../../services/axios.js";
 
 const RequestResetOtp = () => {
   const [email, setEmail] = useState({ email: "" });
@@ -37,7 +38,7 @@ const RequestResetOtp = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post("/api/auth/user/request-reset-otp", {
+      const response = await instance.post("/api/auth/user/request-reset-otp", {
         email: email.email,
       });
       setShowSuccessModal(true);

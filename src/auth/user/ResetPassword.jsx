@@ -12,6 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import instance from "../../services/axios.js";
 
 const ResetPassword = () => {
   const navigate = useNavigate();
@@ -75,7 +76,7 @@ const ResetPassword = () => {
 
     setLoading(true);
     try {
-      const { data } = await axios.post("/api/auth/user/reset-password", {
+      const { data } = await instance.post("/api/auth/user/reset-password", {
         email: email.trim(),
         otp: otp.trim(),
         newPassword,

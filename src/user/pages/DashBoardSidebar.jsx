@@ -52,7 +52,7 @@ export function DashBoardSidebar({
               key={item.id}
               variant={activeSection === item.id ? "default" : "ghost"}
               className="w-full justify-start gap-3"
-              onClick={() => onSectionChange(item.id)} size={undefined}            >
+              onClick={() => onSectionChange(item.id)}        >
               <Icon className="h-4 w-4" />
               {item.label}
             </Button>

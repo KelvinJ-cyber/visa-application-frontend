@@ -23,6 +23,7 @@ import axios from "../../services/axios.js";
 import { useNavigate } from "react-router-dom";
 import { Input } from "@/components/ui/input.jsx";
 import { Label } from "@/components/ui/label.jsx";
+import instance from "../../services/axios.js";
 const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -52,7 +53,7 @@ const Login = () => {
 
     try {
       // API call here
-      const response = await axios.post("/api/auth/user/login", {
+      const response = await instance.post("/api/auth/user/login", {
         email: formData.email,
         password: formData.password,
       });
@@ -69,7 +70,7 @@ const Login = () => {
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
       localStorage.setItem("tokenExpiry", expiresAt);
 
-      console.log(localStorage);
+    
 
       toast.info("Login successful! Redirecting....");
       setTimeout(() => {
@@ -79,7 +80,7 @@ const Login = () => {
         toast.success("Welcome back, " + userInfo.firstName, {
           description: "You have successfully logged in.",
         });
-      }, 2500);
+      }, 2000);
     } catch (err) {
       if (err.response && err.response.status === 403) {
         toast.error("Your account has been deactivated. Contact support.");
