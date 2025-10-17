@@ -7,12 +7,15 @@ import RequestResetOtp from '@/auth/user/RequestResetOtp';
 import ResetPassword from '@/auth/user/ResetPassword';
 import AdminLogin from '@/auth/admin/AdminLogin';
 import DashBoard from '@/user/DashBoard';
+import Page from "@/components/landing_page/page";
 const AppRoutes = () => {
   return (
     <Router>
       <Routes>
+        {/*Landing page */}
+        <Route path="/" element= {<Page/>}/>
+
         {/* User Auth routes  */}
-        <Route path="*" element={<Navigate to="/login" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify" element={<VerifyEmail />} />
         <Route path="/login" element={<Login />} />
