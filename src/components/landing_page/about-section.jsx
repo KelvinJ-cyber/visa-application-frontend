@@ -1,4 +1,5 @@
 import { Globe2 } from "lucide-react"
+import img from '@/assets/diverse-people-traveling-with-luggage-at-modern-ai.jpg'
 
 export function AboutSection() {
   return (
@@ -29,7 +30,7 @@ export function AboutSection() {
             {/* Image */}
             <div className="relative animate-in fade-in slide-in-from-right duration-700">
               <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <img src="/diverse-people-traveling-with-luggage-at-modern-ai.jpg" alt="People traveling" className="w-full h-auto" />
+                <img src={img} alt="People traveling" className="w-full h-auto" />
               </div>
               {/* Decorative Element */}
               <div className="absolute -bottom-6 -right-6 w-48 h-48 bg-primary/20 rounded-full blur-3xl -z-10" />

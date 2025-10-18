@@ -28,7 +28,7 @@ export function HeroSection() {
               className="w-full sm:w-auto text-base lg:text-lg px-8 py-6 shadow-xl hover:shadow-2xl transition-all"
               asChild
             >
-              <Link href="/login">
+              <Link to="/register">
                 Apply Now
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
@@ -39,7 +39,7 @@ export function HeroSection() {
               className="w-full sm:w-auto text-base lg:text-lg px-8 py-6 bg-white/10 backdrop-blur-sm border-white/30 text-white hover:bg-white/20 hover:text-white shadow-xl"
               asChild
             >
-              <Link href="/admin/login">Agent Login</Link>
+              <Link to="/admin/login">Agent Login</Link>
             </Button>
           </div>
         </div>
