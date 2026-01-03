@@ -91,7 +91,7 @@ const VerifyEmail = () => {
   return (
     <>
       <div
-        className="max-w-md mt-70 flex-1 mx-auto p-6 rounded-xl shadow-lg border h-100 bg-white"
+        className="max-w-md w-full mx-4 sm:mx-auto sm:max-w-md mt-50 p-6 rounded-xl shadow-lg border bg-white "
         style={{
           fontFamily: "var(--font-ubuntu)",
         }}

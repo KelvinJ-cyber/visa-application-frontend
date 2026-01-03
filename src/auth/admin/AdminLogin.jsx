@@ -90,7 +90,7 @@ const AdminLogin = () => {
   return (
     <>
       <Card
-        className=" h-120 flex ml-230 shadow-lg w-100 mt-40"
+        className="w-full max-w-md mx-4 sm:mx-auto mt-50 shadow-lg"
         style={{ fontFamily: "var(--font-ubuntu)" }}
       >
         <CardHeader className="text-center">
