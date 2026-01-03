@@ -19,6 +19,8 @@ import LogoutButton from "@/components/LogoutButton.jsx";
 export function DashBoardSidebar({
   activeSection,
   onSectionChange,
+  mobileOpen = false,
+  onClose = () => {},
 }) {
    const userInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
   useEffect(() => {
@@ -38,10 +40,28 @@ export function DashBoardSidebar({
 
    return (
     <>
-    <div className="w-64 bg-card border-r border-border h-full p-4">
+    {/* Overlay for mobile when sidebar open */}
+    {mobileOpen && (
+      <div
+        className="fixed inset-0 bg-black bg-opacity-30 z-30 md:hidden"
+        onClick={onClose}
+      />
+    )}
+
+    <div className={`fixed z-40 inset-y-0 left-0 w-64 transform ${mobileOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-200 md:relative md:translate-x-0 md:w-64 bg-card border-r border-border h-full p-4`}>
       <div className="mb-8">
-        <h2 className="mb-2 text-[15] font-bold">Travel Sure</h2>
-        Welcome back, {userInfo.firstName ?? "User"}
+        <div className="flex items-center justify-between">
+          <h2 className="mb-2 text-[15] font-bold">Travel Sure</h2>
+          {/* Close on mobile */}
+          <button
+            className="md:hidden p-1 rounded hover:bg-gray-100"
+            onClick={onClose}
+            aria-label="Close sidebar"
+          >
+            ✕
+          </button>
+        </div>
+        <div>Welcome back, {userInfo.firstName ?? "User"}</div>
       </div>
       
       <nav className="space-y-2">
@@ -58,7 +78,7 @@ export function DashBoardSidebar({
             </Button>
           );
         })}
-        <div className="mt-155">
+        <div className="mt-4 md:mt-40">
         <LogoutButton />
         </div>
       </nav>

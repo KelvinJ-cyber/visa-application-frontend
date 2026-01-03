@@ -47,7 +47,7 @@ export function Header() {
               <a
                 key={link.href}
                 href={link.href}
-                className=" font-medium text-foreground/80 hover:text-primary transition-colors text-[14px]"
+                className="font-semibold text-foreground hover:text-primary transition-colors text-[14px]"
               >
                 {link.label}
               </a>
@@ -57,7 +57,7 @@ export function Header() {
           {/* Desktop CTA Buttons */}
           <div className="hidden md:flex items-center gap-3">
             <Button variant="ghost" asChild>
-              <Link to="/login">Sign In</Link>
+              <Link to="/login" className="">Sign In</Link>
             </Button>
             <Button asChild>
               <Link to="/admin/login">Agent Login</Link>
@@ -82,7 +82,7 @@ export function Header() {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm font-medium text-foreground/80 hover:text-primary transition-colors py-2"
+                  className="text-sm font-semibold text-foreground/80 hover:text-primary transition-colors py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {link.label}

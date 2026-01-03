@@ -97,7 +97,7 @@ const Login = () => {
   return (
     <>
       <Card
-        className="flex ml-230 h-120 shadow-lg w-120 mt-40"
+        className="w-full max-w-md mx-4 sm:mx-auto mt-50 shadow-lg"
         style={{ fontFamily: "var(--font-ubuntu)" }}
       >
         <CardHeader className="text-center">

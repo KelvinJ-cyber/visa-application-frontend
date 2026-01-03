@@ -66,7 +66,7 @@ const RequestResetOtp = () => {
   return (
     <>
       <div className="ml-230 w-120  min-h-screen mt-50  ">
-        <div className="w-full  max-w-md p-8 bg-white border border-black/5 rounded-2xl shadow-md">
+        <div className="w-full mx-4 sm:mx-auto sm:max-w-md p-6 bg-white border border-black/5 rounded-2xl shadow-md">
           <h1 className="text-2xl font-semibold text-black mb-2 justify-center flex">
             Forgot your password?
           </h1>

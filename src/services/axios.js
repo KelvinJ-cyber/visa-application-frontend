@@ -2,14 +2,14 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "https://visa-application-site.onrender.com",
   headers: { "Content-Type": "application/json" },
   timeout: 200000, // Request timeout in milliseconds
 });
 
-// Create a separate instance for file uploads
+//  Create a separate instance for file uploads
 const uploadApi = axios.create({
-  baseURL: 'http://localhost:8080/api/user/documents',
+  baseURL: 'https://visa-application-site.onrender.com/api/user/documents',
   timeout: 30000, // Longer timeout for file uploads
   headers: {
     'Content-Type': 'multipart/form-data',
