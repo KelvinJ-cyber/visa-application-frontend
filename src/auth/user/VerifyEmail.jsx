@@ -34,7 +34,7 @@ const VerifyEmail = () => {
     setLoading(true);
     setNotification({ type: "", content: "" });
     try {
-      const response = await axios.post("/api/auth/user/verify", {
+      const response = await instance.post("/api/auth/user/verify", {
         email: verification.email,
         verificationCode: verification.verificationCode,
       });
