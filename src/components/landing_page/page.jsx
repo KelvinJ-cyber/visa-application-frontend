@@ -9,9 +9,9 @@ import { Footer } from "./footer";
 
 export default function Page() {
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen flex flex-col font-sans antialiased text-foreground bg-background selection:bg-primary/20 selection:text-primary">
       <Header />
-      <main>
+      <main className="flex-1">
         <HeroSection />
         <AboutSection />
         <HowItWorksSection />

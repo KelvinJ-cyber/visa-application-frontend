@@ -27,27 +27,27 @@ export function Header() {
   return (
     <header
       className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        isScrolled ? "bg-background/95 backdrop-blur-md shadow-md" : "bg-transparent",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+        isScrolled ? "bg-background/80 backdrop-blur-xl shadow-sm border-b border-border/50 py-1" : "bg-transparent py-2",
       )}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="bg-primary rounded-lg p-2 transition-transform group-hover:scale-105">
-              <Globe className="h-5 w-5 text-primary-foreground" />
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="bg-primary/10 text-primary rounded-xl p-2.5 transition-all duration-300 group-hover:scale-105 group-hover:bg-primary group-hover:text-primary-foreground shadow-sm">
+              <Globe className="h-5 w-5" />
             </div>
-            <span className="font-bold text-lg lg:text-xl text-foreground">Travel Sure</span>
+            <span className="font-bold text-xl lg:text-2xl text-foreground tracking-tight">Travel Sure</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-10">
             {navLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
-                className="font-semibold text-foreground hover:text-primary transition-colors text-[14px]"
+                className="font-medium text-muted-foreground hover:text-foreground transition-colors text-sm tracking-wide"
               >
                 {link.label}
               </a>
@@ -55,11 +55,11 @@ export function Header() {
           </nav>
 
           {/* Desktop CTA Buttons */}
-          <div className="hidden md:flex items-center gap-3">
-            <Button variant="ghost" asChild>
-              <Link to="/login" className="">Sign In</Link>
+          <div className="hidden md:flex items-center gap-4">
+            <Button variant="ghost" className="font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full px-6" asChild>
+              <Link to="/login">Sign In</Link>
             </Button>
-            <Button asChild>
+            <Button className="rounded-full px-6 shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5" asChild>
               <Link to="/admin/login">Agent Login</Link>
             </Button>
           </div>
