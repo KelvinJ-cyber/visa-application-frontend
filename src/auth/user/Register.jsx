@@ -55,7 +55,10 @@ const Register = () => {
       //   type: "success",
       //   text: " Registration successful! Please check your email for verification code.",
       // });
-      toast.success(" Registration successful! Please check your email for verification code.");
+      setTimeout(() =>
+        toast.success(" Registration successful! Please check your email for verification code.")
+        , 2000)
+
       toast.info("Check spam folder if you don't receive the email.");
       setTimeout(() => navigate("/verify"), 1500);
     } catch (error) {
