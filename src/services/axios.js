@@ -1,6 +1,31 @@
 // Attach JWT token to uploadApi requests
 import axios from "axios";
 
+// --- 24-hour localStorage expiration logic ---
+const CLEAR_TIMEOUT_MS = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+
+function checkAndClearLocalStorage() {
+  const setupTime = localStorage.getItem("setupTime");
+  const now = new Date().getTime();
+
+  if (setupTime == null) {
+    localStorage.setItem("setupTime", now.toString());
+  } else {
+    if (now - parseInt(setupTime, 10) > CLEAR_TIMEOUT_MS) {
+      localStorage.clear();
+      localStorage.setItem("setupTime", now.toString());
+      window.location.href = "/login"; // Redirect to prevent user from acting on empty state
+    }
+  }
+}
+
+// Run immediately upon initialization
+checkAndClearLocalStorage();
+
+// Set a recurring interval to check it in the background while the tab is open
+setInterval(checkAndClearLocalStorage, 60 * 1000); // Check every minute
+// ---------------------------------------------
+
 const instance = axios.create({
   baseURL: "https://soothing-tranquility-production-335c.up.railway.app",
   headers: { "Content-Type": "application/json" },
