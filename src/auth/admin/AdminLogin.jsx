@@ -33,6 +33,7 @@ const AdminLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const isServerDown = true;
 
   const validateForm = () => {
     if (!formData.email.trim()) return "Email is required";
@@ -42,6 +43,7 @@ const AdminLogin = () => {
   };
 
   const handleSubmit = async () => {
+    if (isServerDown) return;
     const error = validateForm();
     if (error) {
       setNotification({ type: "error", content: error });
@@ -98,6 +100,11 @@ const AdminLogin = () => {
             Welcome Admin !
           </CardTitle>
           <CardDescription>Authorized Personnel Only</CardDescription>
+          {isServerDown && (
+            <div style={{ padding: '15px', backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '8px', marginTop: '15px', textAlign: 'center', fontWeight: 'bold' }}>
+              ⚠️ Backend servers are currently down. You won't be able to login right now. Check back later!
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -189,7 +196,8 @@ const AdminLogin = () => {
                                          transition-all duration-300 ease-in-out 
                                          hover:bg-[#333] hover:scale-105 hover:shadow-lg 
                                          active:scale-95"
-              disabled={loading}
+              disabled={loading || isServerDown}
+              style={{ opacity: isServerDown ? 0.5 : 1, cursor: isServerDown ? 'not-allowed' : 'pointer' }}
             >
               {loading ? (
                 <div className="flex items-center">

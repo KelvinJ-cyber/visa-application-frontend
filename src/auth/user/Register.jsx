@@ -14,6 +14,7 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const isServerDown = true;
 
   const [registerFormData, setRegisterFormData] = useState({
     firstName: "",
@@ -25,6 +26,7 @@ const Register = () => {
 
   const handleRegisterSubmit = async (e) => {
     e.preventDefault();
+    if (isServerDown) return;
     setLoading(true);
     setMessage({ type: "", text: "" });
 
@@ -87,6 +89,12 @@ const Register = () => {
           <h2 className="text-2xl text-center font-semibold text-black mb-6">
             User Registration
           </h2>
+
+          {isServerDown && (
+            <div style={{ padding: '15px', backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '8px', marginBottom: '20px', textAlign: 'center', fontWeight: 'bold' }}>
+              ⚠️ Backend servers are currently down. You won't be able to register right now. Check back later!
+            </div>
+          )}
 
           <form onSubmit={handleRegisterSubmit} className="space-y-4 mb-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -265,7 +273,8 @@ const Register = () => {
 
             <Button
               className="w-full mt-3 py-3 rounded-lg font-semibold bg-black text-white transition-all duration-300 ease-in-out hover:bg-[#333] hover:scale-105 hover:shadow-lg active:scale-95"
-              disabled={loading}
+              disabled={loading || isServerDown}
+              style={{ opacity: isServerDown ? 0.5 : 1, cursor: isServerDown ? 'not-allowed' : 'pointer' }}
               type="submit"
             >
               {loading ? (

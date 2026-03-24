@@ -34,6 +34,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
+  const isServerDown = true;
 
   const validateForm = () => {
     if (!formData.email.trim()) return "Email is required";
@@ -43,6 +44,7 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
+    if (isServerDown) return;
     setLoading(true);
     const error = validateForm();
     if (error) {
@@ -70,7 +72,7 @@ const Login = () => {
       localStorage.setItem("userInfo", JSON.stringify(userInfo));
       localStorage.setItem("tokenExpiry", expiresAt);
 
-    
+
 
       toast.info("Login successful! Redirecting....");
       setTimeout(() => {
@@ -88,7 +90,7 @@ const Login = () => {
       }
       toast.error(
         err.response?.data?.message ||
-          "Invalid credentials. Please try again"
+        "Invalid credentials. Please try again"
       );
     } finally {
       setLoading(false);
@@ -107,6 +109,11 @@ const Login = () => {
           <CardDescription>
             Sign in to <span className=" font-bold">TravelSure</span>
           </CardDescription>
+          {isServerDown && (
+            <div style={{ padding: '15px', backgroundColor: '#fee2e2', color: '#dc2626', borderRadius: '8px', marginTop: '15px', textAlign: 'center', fontWeight: 'bold' }}>
+              ⚠️ Backend servers are currently down. You won't be able to login right now. Check back later!
+            </div>
+          )}
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
@@ -205,7 +212,8 @@ const Login = () => {
                                      transition-all duration-300 ease-in-out 
                                      hover:bg-[#333] hover:scale-105 hover:shadow-lg 
                                      active:scale-95"
-              disabled={loading}
+              disabled={loading || isServerDown}
+              style={{ opacity: isServerDown ? 0.5 : 1, cursor: isServerDown ? 'not-allowed' : 'pointer' }}
             >
               {loading ? (
                 <div className="flex items-center">
